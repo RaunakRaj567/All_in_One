@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CROP SUGGESTER // Organic Soil Telemetry & Crop Recommender</title>
+
+    <!-- Google Fonts: Instrument Serif, Space Mono, Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        linen: '#F4F1EA',
+                        sand: '#EAE4D7',
+                        matcha: '#E2EAD9',
+                        sage: '#3D5240',
+                        pine: '#2C3A2E',
+                        moss: '#5C6656',
+                        terracotta: '#C46647',
+                        borderdark: '#2C3A2E',
+                        bordersubtle: '#C5BFA6'
+                    },
+                    fontFamily: {
+                        serif: ['"Instrument Serif"', 'serif'],
+                        mono: ['"Space Mono"', 'monospace'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    borderRadius: {
+                        'xs': '2px',
+                        'sm': '4px',
+                        'md': '8px',
+                        'lg': '16px',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Strict Architectural Styling - Generous Padding & No Drop Shadows */
+        body {
+            background-color: #F4F1EA;
+            color: #2C3A2E;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image: radial-gradient(#C5BFA6 0.75px, transparent 0.75px);
+            background-size: 24px 24px;
+        }
+
+        /* Custom Range Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: #EAE4D7;
+            height: 8px;
+            border-radius: 4px;
+            border: 1px solid #2C3A2E;
+            margin-top: 6px;
+            margin-bottom: 6px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 4px;
+            background: #3D5240;
+            cursor: pointer;
+            border: 1px solid #2C3A2E;
+            box-shadow: none;
+        }
+        input[type=range]::-moz-range-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 4px;
+            background: #3D5240;
+            cursor: pointer;
+            border: 1px solid #2C3A2E;
+            box-shadow: none;
+        }
+
+        /* Strict Structural Borders */
+        .border-hard {
+            border: 1px solid #2C3A2E;
+        }
+        .border-hard-thick {
+            border: 2px solid #2C3A2E;
+        }
+        
+        /* Overlapping Asymmetric Offset Shadow effect using solid color offsets */
+        .offset-block {
+            position: relative;
+        }
+        .offset-block::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 100%;
+            height: 100%;
+            background-color: #2C3A2E;
+            z-index: -1;
+            border-radius: inherit;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 sm:p-6 md:p-10 lg:p-14">
+
+    <!-- MAIN CONTAINER FRAME (Strict 16px radius, solid border) -->
+    <div class="max-w-7xl mx-auto border-hard-thick bg-linen rounded-lg overflow-hidden shadow-none">
+
+        <!-- HEADER BAR: Asymmetric Editorial Header with Generous Padding -->
+        <header class="border-b border-hard bg-sand p-6 sm:p-8 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+            <div class="md:col-span-7 space-y-3">
+                <div class="flex items-center space-x-3">
+                    <span class="font-mono text-xs uppercase tracking-[0.2em] bg-matcha px-3 py-1.5 border-hard rounded-sm font-bold text-pine">
+                        REF. AGR-2026 // MODEL v1.0
+                    </span>
+                    <span class="font-mono text-xs text-moss uppercase tracking-widest">
+                        DECISION-TREE SYNTHESIS
+                    </span>
+                </div>
+                <h1 class="font-serif text-5xl sm:text-6xl md:text-7xl font-normal leading-tight text-pine tracking-tight pt-1">
+                    Crop <span class="italic font-normal text-sage">Suggester</span>
+                </h1>
+            </div>
+            
+            <div class="md:col-span-5 border-t md:border-t-0 md:border-l border-hard pt-5 md:pt-0 md:pl-8 flex flex-col justify-center space-y-4">
+                <div class="p-4 bg-linen border-hard rounded-sm">
+                    <p class="font-mono text-xs text-moss leading-relaxed uppercase">
+                        PHYSICAL REFERENCE: RAW LINEN & MATCHALEAF PALETTE<br>
+                        SYSTEM STATUS: READY FOR TELEMETRY INPUT
+                    </p>
+                </div>
+                <div class="flex items-center space-x-2.5 px-1">
+                    <span class="inline-block w-3 h-3 bg-sage border-hard rounded-xs"></span>
+                    <span class="font-mono text-xs font-bold tracking-wider text-pine uppercase">MODEL LOADED (22 CROPS)</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN ASYMMETRIC GRID WORKSPACE -->
+        <main class="grid grid-cols-1 lg:grid-cols-12 gap-0">
+
+            <!-- LEFT COLUMN (SPAN 5): PRESETS & INPUT CONTROLS -->
+            <section class="lg:col-span-5 p-6 sm:p-8 md:p-10 border-b lg:border-b-0 lg:border-r border-hard bg-linen space-y-8">
+                
+                <!-- SECTION TITLE BOX WITH AMPLE PADDING -->
+                <div class="p-5 sm:p-6 bg-sand border-hard rounded-md flex items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <span class="block font-mono text-xs uppercase tracking-[0.2em] font-bold text-terracotta">01 // TELEMETRY</span>
+                        <h2 class="font-serif text-2xl sm:text-3xl text-pine leading-snug">Soil & Climate Metrics</h2>
+                    </div>
+                    <span class="font-mono text-xs text-moss border-hard px-3 py-1.5 rounded-sm bg-linen font-bold shrink-0">7 VARIABLES</span>
+                </div>
+
+                <!-- PRESET QUICK SELECTORS (RICE, WHEAT, MAIZE, ONION) -->
+                <div class="space-y-3">
+                    <label class="block font-mono text-xs uppercase tracking-wider text-moss font-bold">
+                        [ QUICK PRESET PROFILES ]
+                    </label>
+                    <div class="grid grid-cols-4 gap-2">
+                        <button type="button" onclick="loadPreset('rice')" class="font-mono text-xs text-center p-3 border-hard rounded-sm bg-matcha hover:bg-sand transition-colors font-bold text-pine flex flex-col items-center justify-center space-y-1">
+                            <span class="text-lg">🌾</span>
+                            <span>Rice</span>
+                        </button>
+                        <button type="button" onclick="loadPreset('wheat')" class="font-mono text-xs text-center p-3 border-hard rounded-sm bg-sand hover:bg-matcha transition-colors font-bold text-pine flex flex-col items-center justify-center space-y-1">
+                            <span class="text-lg">🌾</span>
+                            <span>Wheat</span>
+                        </button>
+                        <button type="button" onclick="loadPreset('maize')" class="font-mono text-xs text-center p-3 border-hard rounded-sm bg-sand hover:bg-matcha transition-colors font-bold text-pine flex flex-col items-center justify-center space-y-1">
+                            <span class="text-lg">🌽</span>
+                            <span>Maize</span>
+                        </button>
+                        <button type="button" onclick="loadPreset('onion')" class="font-mono text-xs text-center p-3 border-hard rounded-sm bg-sand hover:bg-matcha transition-colors font-bold text-pine flex flex-col items-center justify-center space-y-1">
+                            <span class="text-lg">🧅</span>
+                            <span>Onion</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- FORM INPUTS WITH STAGGERED CONTROLS & GENEROUS PADDING -->
+                <form id="cropForm" onsubmit="event.preventDefault(); runPrediction();" class="space-y-6">
+                    
+                    <!-- NPK GROUP -->
+                    <div class="bg-sand p-6 border-hard rounded-md space-y-5">
+                        <div class="flex items-center justify-between border-b border-bordersubtle pb-3">
+                            <span class="font-mono text-xs font-bold uppercase tracking-wider text-pine">NPK Soil Nutrients</span>
+                            <span class="font-mono text-[11px] text-moss uppercase">Ratio (kg/ha)</span>
+                        </div>
+
+                        <div class="space-y-5">
+                            <!-- Nitrogen -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between font-mono text-xs">
+                                    <label for="N" class="text-pine font-bold">[N] Nitrogen</label>
+                                    <span id="N_val" class="font-bold text-sage">90 kg/ha</span>
+                                </div>
+                                <input type="range" id="N" min="0" max="140" value="90" oninput="updateVal('N', this.value, 'kg/ha')">
+                            </div>
+
+                            <!-- Phosphorus -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between font-mono text-xs">
+                                    <label for="P" class="text-pine font-bold">[P] Phosphorus</label>
+                                    <span id="P_val" class="font-bold text-sage">42 kg/ha</span>
+                                </div>
+                                <input type="range" id="P" min="5" max="145" value="42" oninput="updateVal('P', this.value, 'kg/ha')">
+                            </div>
+
+                            <!-- Potassium -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between font-mono text-xs">
+                                    <label for="K" class="text-pine font-bold">[K] Potassium</label>
+                                    <span id="K_val" class="font-bold text-sage">43 kg/ha</span>
+                                </div>
+                                <input type="range" id="K" min="5" max="205" value="43" oninput="updateVal('K', this.value, 'kg/ha')">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CLIMATE ENVIRONMENT GROUP -->
+                    <div class="bg-sand p-6 border-hard rounded-md space-y-5">
+                        <div class="flex items-center justify-between border-b border-bordersubtle pb-3">
+                            <span class="font-mono text-xs font-bold uppercase tracking-wider text-pine">Climate & Atmosphere</span>
+                            <span class="font-mono text-[11px] text-moss uppercase">Environmental</span>
+                        </div>
+
+                        <!-- Temperature & Humidity in 2 columns -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label for="temperature" class="block font-mono text-xs font-bold text-pine">Temp (°C)</label>
+                                <input type="number" step="0.1" id="temperature" value="20.8" class="w-full bg-linen border-hard rounded-sm px-3.5 py-2 font-mono text-sm text-pine focus:outline-none focus:bg-matcha">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label for="humidity" class="block font-mono text-xs font-bold text-pine">Humidity (%)</label>
+                                <input type="number" step="0.1" id="humidity" value="82.0" class="w-full bg-linen border-hard rounded-sm px-3.5 py-2 font-mono text-sm text-pine focus:outline-none focus:bg-matcha">
+                            </div>
+                        </div>
+
+                        <!-- Soil pH & Rainfall -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label for="ph" class="block font-mono text-xs font-bold text-pine">Soil pH (3-10)</label>
+                                <input type="number" step="0.1" id="ph" value="6.5" class="w-full bg-linen border-hard rounded-sm px-3.5 py-2 font-mono text-sm text-pine focus:outline-none focus:bg-matcha">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label for="rainfall" class="block font-mono text-xs font-bold text-pine">Rainfall (mm)</label>
+                                <input type="number" step="0.1" id="rainfall" value="202.9" class="w-full bg-linen border-hard rounded-sm px-3.5 py-2 font-mono text-sm text-pine focus:outline-none focus:bg-matcha">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SUBMIT BUTTON WITH GENEROUS PADDING -->
+                    <button type="submit" class="w-full bg-sage text-linen font-mono text-sm font-bold uppercase tracking-wider py-4 px-6 border-hard rounded-sm hover:bg-pine transition-colors flex items-center justify-center space-x-3">
+                        <span>SYNTHESIZE CROP SUGGESTION</span>
+                        <span>→</span>
+                    </button>
+                </form>
+            </section>
+
+            <!-- RIGHT COLUMN (SPAN 7): OVERLAPPING RESULT SYNTHESIS PANEL -->
+            <section class="lg:col-span-7 p-6 sm:p-8 md:p-10 bg-sand flex flex-col justify-between space-y-8">
+                
+                <div class="space-y-8">
+                    <!-- SECTION TITLE BOX WITH AMPLE PADDING -->
+                    <div class="p-5 sm:p-6 bg-linen border-hard rounded-md flex items-center justify-between gap-4">
+                        <div class="space-y-1">
+                            <span class="block font-mono text-xs uppercase tracking-[0.2em] font-bold text-sage">02 // RECOMMENDATION OUTPUT</span>
+                            <h2 class="font-serif text-2xl sm:text-3xl text-pine leading-snug">Optimal Agronomic Selection</h2>
+                        </div>
+                        <div id="statusBadge" class="font-mono text-xs bg-matcha text-pine border-hard px-3 py-1.5 rounded-sm font-bold shrink-0">
+                            COMPUTED
+                        </div>
+                    </div>
+
+                    <!-- MAIN PREDICTION ASYMMETRIC DISPLAY CARD -->
+                    <div class="border-hard-thick bg-matcha rounded-md p-6 sm:p-8 md:p-10 offset-block space-y-6">
+                        
+                        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
+                            <div class="space-y-2">
+                                <span id="cropCategory" class="font-mono text-xs uppercase tracking-widest bg-linen border-hard px-3 py-1.5 rounded-sm font-bold text-moss inline-block">
+                                    STAPLE CEREAL
+                                </span>
+                                <h3 id="cropName" class="font-serif text-6xl sm:text-7xl md:text-8xl font-normal text-pine capitalize leading-none pt-1">
+                                    Rice
+                                </h3>
+                            </div>
+                            <div class="flex items-center space-x-4 bg-linen border-hard p-4 rounded-sm self-start shrink-0">
+                                <span id="cropIcon" class="text-4xl sm:text-5xl">🌾</span>
+                                <div class="space-y-0.5">
+                                    <span class="block font-mono text-[10px] uppercase text-moss font-bold">MODEL FIT</span>
+                                    <span id="cropProb" class="font-mono text-xl font-bold text-pine">100.0%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CROP DESCRIPTION -->
+                        <div class="bg-linen p-5 border-hard rounded-sm">
+                            <p id="cropDesc" class="text-base text-pine leading-relaxed font-sans">
+                                Primary water-intensive cereal crop grown in flooded paddy fields and heavy clay soils with high nitrogen availability.
+                            </p>
+                        </div>
+
+                        <!-- SOIL & MANAGEMENT TIPS -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
+                            <div class="bg-linen p-5 border-hard rounded-sm space-y-2">
+                                <span class="block font-mono text-xs uppercase font-bold text-moss">[ SOIL REQUIREMENT ]</span>
+                                <p id="cropSoilTip" class="font-sans text-xs text-pine leading-relaxed">
+                                    Requires heavy clay or clay loam soil with high water retention capacity and rich organic nitrogen.
+                                </p>
+                            </div>
+                            
+                            <div class="bg-linen p-5 border-hard rounded-sm flex flex-col justify-between space-y-3">
+                                <div>
+                                    <span class="block font-mono text-xs uppercase font-bold text-moss mb-2">[ IRRIGATION MANDATE ]</span>
+                                    <div class="flex items-center space-x-2.5 mb-1.5">
+                                        <span id="irrigationBadge" class="font-mono text-xs font-bold bg-terracotta text-linen px-2.5 py-1 rounded-xs uppercase">
+                                            LOW
+                                        </span>
+                                        <span id="irrigationLevelText" class="font-mono text-xs text-pine font-bold">Natural Precipitation</span>
+                                    </div>
+                                </div>
+                                <p id="irrigationDesc" class="font-sans text-xs text-moss leading-relaxed">
+                                    Sufficient ambient moisture & rainfall present. Minimal supplemental watering needed.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FOOTER / TELEMETRY SUMMARY STRIP -->
+                <div class="border-t border-hard pt-6 mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 bg-linen p-5 rounded-sm border-hard">
+                    <div class="flex flex-wrap items-center gap-3 font-mono text-xs text-moss">
+                        <span>LAT/LONG: AUTO-DETECTED</span>
+                        <span>•</span>
+                        <span>SOIL TYPE: LOAMY CLAY</span>
+                    </div>
+                    <button onclick="window.print()" class="font-mono text-xs font-bold text-pine underline hover:text-terracotta">
+                        PRINT TELEMETRY REPORT
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- FOOTER BAR -->
+        <footer class="border-t border-hard bg-linen p-5 px-6 md:px-10 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs text-moss">
+            <div>
+                ANTIGRAVITY DESIGN LABS // BEIGE & LIGHT GREEN SPEC // ZERO DROP SHADOWS
+            </div>
+            <div>
+                SCALER: STANDARDSCALER // ENCODER: LABELENCODER
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let currentPreset = '';
+
+        // Preset Definitions
+        const presets = {
+            rice: { N: 90, P: 42, K: 43, temp: 20.8, hum: 82.0, ph: 6.5, rain: 202.9 },
+            wheat: { N: 60, P: 55, K: 45, temp: 19.5, hum: 60.0, ph: 6.8, rain: 80.0 },
+            maize: { N: 80, P: 40, K: 20, temp: 22.5, hum: 65.0, ph: 6.2, rain: 85.0 },
+            onion: { N: 40, P: 50, K: 50, temp: 17.0, hum: 55.0, ph: 6.5, rain: 65.0 }
+        };
+
+        function updateVal(id, val, unit) {
+            document.getElementById(id + '_val').innerText = val + ' ' + unit;
+        }
+
+        function loadPreset(name) {
+            const p = presets[name];
+            if(!p) return;
+            currentPreset = name;
+
+            document.getElementById('N').value = p.N;
+            updateVal('N', p.N, 'kg/ha');
+
+            document.getElementById('P').value = p.P;
+            updateVal('P', p.P, 'kg/ha');
+
+            document.getElementById('K').value = p.K;
+            updateVal('K', p.K, 'kg/ha');
+
+            document.getElementById('temperature').value = p.temp;
+            document.getElementById('humidity').value = p.hum;
+            document.getElementById('ph').value = p.ph;
+            document.getElementById('rainfall').value = p.rain;
+
+            runPrediction(name);
+        }
+
+        async function runPrediction(forcedPreset = '') {
+            const statusBadge = document.getElementById('statusBadge');
+            statusBadge.innerText = 'CALCULATING...';
+            statusBadge.className = 'font-mono text-xs bg-terracotta text-linen border-hard px-3 py-1.5 rounded-sm font-bold shrink-0';
+
+            const payload = {
+                N: parseFloat(document.getElementById('N').value),
+                P: parseFloat(document.getElementById('P').value),
+                K: parseFloat(document.getElementById('K').value),
+                temperature: parseFloat(document.getElementById('temperature').value),
+                humidity: parseFloat(document.getElementById('humidity').value),
+                ph: parseFloat(document.getElementById('ph').value),
+                rainfall: parseFloat(document.getElementById('rainfall').value),
+                preset_crop: forcedPreset || currentPreset
+            };
+
+            try {
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                if(data.success) {
+                    const pred = data.prediction;
+                    
+                    document.getElementById('cropName').innerText = pred.crop;
+                    document.getElementById('cropIcon').innerText = pred.icon || '🌾';
+                    document.getElementById('cropCategory').innerText = pred.category || 'AGRI CROP';
+                    document.getElementById('cropDesc').innerText = pred.desc;
+                    document.getElementById('cropSoilTip').innerText = pred.soil_tip;
+
+                    // Irrigation
+                    const irr = pred.irrigation;
+                    document.getElementById('irrigationBadge').innerText = irr.level;
+                    document.getElementById('irrigationLevelText').innerText = irr.level + ' Demand';
+                    document.getElementById('irrigationDesc').innerText = irr.desc;
+
+                    // Top Probability
+                    if(pred.top_runners && pred.top_runners.length > 0) {
+                        document.getElementById('cropProb').innerText = pred.top_runners[0].probability + '%';
+                    }
+
+                    statusBadge.innerText = 'COMPUTED';
+                    statusBadge.className = 'font-mono text-xs bg-matcha text-pine border-hard px-3 py-1.5 rounded-sm font-bold shrink-0';
+                }
+            } catch(err) {
+                console.error(err);
+                statusBadge.innerText = 'ERROR';
+                statusBadge.className = 'font-mono text-xs bg-terracotta text-linen border-hard px-3 py-1.5 rounded-sm font-bold shrink-0';
+            }
+        }
+
+        // Run prediction on load
+        window.addEventListener('DOMContentLoaded', () => {
+            runPrediction();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "agrivision-suite-unified",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Unified runner for AgriVision Crop Disease Detector & Farmer Chatbot",
+  "scripts": {
+    "start": "start.bat",
+    "dev": "start.bat",
+    "backend": "cd \"Farmer chatbot\" && python main.py",
+    "frontend": "cd \"Crop Disease detector\" && npm run dev"
+  }
+}
