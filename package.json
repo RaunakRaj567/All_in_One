@@ -6,6 +6,7 @@
   "scripts": {
     "start": "start.bat",
     "dev": "start.bat",
+    "reset-db": "curl.exe -s -X POST http://127.0.0.1:8001/api/db/reset",
     "backend": "cd \"Farmer chatbot\" && python main.py",
     "frontend": "cd \"Crop Disease detector\" && npm run dev"
   }
