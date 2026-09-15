@@ -417,7 +417,7 @@ export default function OrderRouteTrackingModal({
               Live Route Movement:
             </span>
             <span className="text-xs font-mono font-bold text-amber-800 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded">
-              {transitProgress}% Completed ({truckStep}/{Math.max(1, roadGeometry.length - 1)} Steps)
+              {transitProgress}% Completed
             </span>
           </div>
 
