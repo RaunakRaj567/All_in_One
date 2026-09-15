@@ -59,10 +59,10 @@ export default function Header({
 
         {/* React Router Nav Links (5 Mega Modules — Farmer Only) */}
         {userRole !== 'buyer' && (
-          <nav className="flex flex-wrap items-center gap-1 bg-field-bg p-1 border-2 border-loam rounded-sm shadow-sharp-sm">
+          <nav className="flex items-center gap-1 bg-field-bg p-1 border-2 border-loam rounded-sm shadow-sharp-sm overflow-x-auto w-full md:w-auto max-w-full no-scrollbar">
             <Link
               to="/detector"
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm font-mono text-xs font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm font-mono text-xs font-bold transition-all shrink-0 ${
                 isDetector
                   ? 'bg-sprout text-field-bg border border-loam shadow-sharp-sm'
                   : 'text-loam hover:bg-sprout-tint/50'
@@ -74,7 +74,7 @@ export default function Header({
 
             <Link
               to="/suggester"
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm font-mono text-xs font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm font-mono text-xs font-bold transition-all shrink-0 ${
                 isSuggester
                   ? 'bg-sprout text-field-bg border border-loam shadow-sharp-sm'
                   : 'text-loam hover:bg-sprout-tint/50'
@@ -86,7 +86,7 @@ export default function Header({
 
             <Link
               to="/chatbot"
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm font-mono text-xs font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm font-mono text-xs font-bold transition-all shrink-0 ${
                 isChatbot
                   ? 'bg-sprout text-field-bg border border-loam shadow-sharp-sm'
                   : 'text-loam hover:bg-sprout-tint/50'
@@ -98,7 +98,7 @@ export default function Header({
 
             <Link
               to="/routes"
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm font-mono text-xs font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm font-mono text-xs font-bold transition-all shrink-0 ${
                 isRoutes
                   ? 'bg-sprout text-field-bg border border-loam shadow-sharp-sm'
                   : 'text-loam hover:bg-sprout-tint/50'
@@ -110,7 +110,7 @@ export default function Header({
 
             <Link
               to="/warehouse"
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm font-mono text-xs font-bold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm font-mono text-xs font-bold transition-all shrink-0 ${
                 isWarehouse
                   ? 'bg-sprout text-field-bg border border-loam shadow-sharp-sm'
                   : 'text-loam hover:bg-sprout-tint/50'
@@ -123,7 +123,7 @@ export default function Header({
         )}
 
         {/* Action Toolbar */}
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full md:w-auto justify-end relative">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full md:w-auto justify-start sm:justify-end relative">
           
           {/* Farmer Notification Bell Icon (Turns RED on unread notifications) */}
           {userRole === 'farmer' && (
@@ -138,7 +138,7 @@ export default function Header({
                 title={unreadNotifCount > 0 ? `${unreadNotifCount} unread sales / warehouse alerts!` : 'Farmer Notifications Bar'}
               >
                 <Bell className={`w-4 h-4 ${unreadNotifCount > 0 ? 'text-red-600 fill-red-100' : 'text-loam'}`} />
-                <span className="hidden sm:inline">Alerts</span>
+                <span className="inline">Alerts</span>
                 {unreadNotifCount > 0 ? (
                   <span className="bg-red-600 text-white font-extrabold text-[10px] px-1.5 py-0.2 rounded-full border border-red-700 shadow-sm animate-bounce">
                     {unreadNotifCount}
@@ -154,7 +154,7 @@ export default function Header({
 
               {/* Real-Time Notification Dropdown Menu */}
               {showNotifDropdown && (
-                <div className="absolute right-0 top-11 w-80 sm:w-96 bg-field-surface border-2 border-loam shadow-sharp-lg z-50 rounded-sm overflow-hidden font-mono text-xs">
+                <div className="absolute right-0 top-11 w-[calc(100vw-2rem)] sm:w-96 max-w-sm bg-field-surface border-2 border-loam shadow-sharp-lg z-50 rounded-sm overflow-hidden font-mono text-xs">
                   <div className="bg-loam text-field-bg px-3 py-2.5 flex items-center justify-between font-bold border-b border-loam">
                     <div className="flex items-center gap-2">
                       <span>🔔 Farmer Sales & Stock Alerts</span>

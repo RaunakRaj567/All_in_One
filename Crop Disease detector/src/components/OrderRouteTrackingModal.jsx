@@ -297,24 +297,24 @@ export default function OrderRouteTrackingModal({
       : 0;
 
   const content = (
-    <div className={`bg-field-surface border-2 border-loam rounded-sm p-4 sm:p-6 shadow-sharp space-y-4 font-mono text-loam ${isInline ? 'w-full' : 'max-w-5xl w-full my-auto relative'}`}>
-      
+    <div className={`bg-field-surface border-2 border-loam rounded-sm p-3 sm:p-6 shadow-sharp space-y-3 sm:space-y-4 font-mono text-loam max-h-[90vh] overflow-y-auto ${isInline ? 'w-full' : 'max-w-5xl w-full my-auto relative'}`}>
+
       {/* ── MODAL / INLINE HEADER ── */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b-2 border-loam pb-3">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 bg-sprout border-2 border-loam rounded-sm flex items-center justify-center text-field-bg font-extrabold text-2xl shadow-sharp-sm">
+          <div className="w-9 h-9 sm:w-11 sm:h-11 bg-sprout border-2 border-loam rounded-sm flex items-center justify-center text-field-bg font-extrabold text-xl sm:text-2xl shadow-sharp-sm shrink-0">
             🗺️
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="font-serif text-xl sm:text-2xl font-extrabold text-loam">
+              <h3 className="font-serif text-lg sm:text-2xl font-extrabold text-loam">
                 {viewerRole === 'buyer' ? 'Live Order Route Tracking' : 'Delivery Drop Location & Highway Route'}
               </h3>
               <span className="bg-loam text-field-bg text-xs px-2.5 py-0.5 rounded-sm font-extrabold">
                 #{order.order_id}
               </span>
               <span className="bg-emerald-100 text-emerald-900 border border-emerald-400 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase font-mono">
-                🟢 Live Synced (Buyer + Driver + Farmer)
+                🟢 Live Synced
               </span>
               <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded border uppercase tracking-wider ${
                 isDelivered || transitProgress === 100
@@ -336,7 +336,7 @@ export default function OrderRouteTrackingModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 hover:bg-loam/10 rounded border-2 border-loam/40 transition active:translate-y-0.5"
+            className="p-1.5 hover:bg-loam/10 rounded border-2 border-loam/40 transition active:translate-y-0.5 self-end sm:self-auto"
             title="Close Route Map"
           >
             <X className="w-5 h-5 text-loam" />
@@ -492,7 +492,7 @@ export default function OrderRouteTrackingModal({
       </div>
 
       {/* ── LEAFLET MAP VIEW WITH ROAD PATH HIGHLIGHTING & MOVING TRUCK ── */}
-      <div className="relative border-2 border-loam rounded-sm overflow-hidden shadow-inner bg-field-bg" style={{ height: '420px' }}>
+      <div className="relative border-2 border-loam rounded-sm overflow-hidden shadow-inner bg-field-bg h-[260px] sm:h-[360px] md:h-[420px] w-full">
         
         {loadingRoad && (
           <div className="absolute top-3 right-3 z-[400] bg-field-surface/90 border border-loam px-3 py-1 rounded text-xs font-bold text-loam flex items-center gap-2 shadow-md">

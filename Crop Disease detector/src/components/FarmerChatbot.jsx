@@ -485,22 +485,22 @@ export default function FarmerChatbot({
       </div>
 
       {/* Chat Messages Feed */}
-      <div className="bg-field-bg border-2 border-loam rounded-sm p-4 h-[420px] overflow-y-auto space-y-4 shadow-inner">
+      <div className="bg-field-bg border-2 border-loam rounded-sm p-3 sm:p-4 h-[350px] sm:h-[420px] overflow-y-auto space-y-3 sm:space-y-4 shadow-inner">
         {messages.map((m, idx) => {
           const isAssistant = m.role === 'assistant';
           return (
             <div
               key={idx}
-              className={`flex items-start gap-3 ${isAssistant ? 'justify-start' : 'justify-end'}`}
+              className={`flex items-start gap-2 sm:gap-3 ${isAssistant ? 'justify-start' : 'justify-end'}`}
             >
               {isAssistant && (
-                <div className="w-8 h-8 rounded-sm bg-sprout border border-loam text-field-bg flex items-center justify-center font-bold text-sm shrink-0">
-                  <Bot className="w-4 h-4" />
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-sm bg-sprout border border-loam text-field-bg flex items-center justify-center font-bold text-xs sm:text-sm shrink-0">
+                  <Bot className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </div>
               )}
 
               <div
-                className={`max-w-[85%] sm:max-w-[75%] p-3.5 rounded-sm border text-xs sm:text-sm font-mono leading-relaxed whitespace-pre-wrap ${
+                className={`max-w-[90%] sm:max-w-[75%] p-3 sm:p-3.5 rounded-sm border text-xs sm:text-sm font-mono leading-relaxed whitespace-pre-wrap ${
                   isAssistant
                     ? 'bg-field-surface border-loam/60 text-loam shadow-sharp-sm'
                     : 'bg-sprout text-field-bg border-loam font-medium'
@@ -514,20 +514,20 @@ export default function FarmerChatbot({
 
                 {/* Voice Readout Button for Assistant Messages */}
                 {isAssistant && m.content && (
-                  <div className="mt-3 pt-2 border-t border-loam/20 flex justify-end">
+                  <div className="mt-2 sm:mt-3 pt-2 border-t border-loam/20 flex justify-end">
                     <button
                       onClick={() => speakMessage(m.content, idx)}
-                      className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-mono bg-field-bg border border-loam/40 rounded-sm hover:border-sprout text-loam"
+                      className="inline-flex items-center gap-1 px-2 py-1 text-[10px] sm:text-[11px] font-mono bg-field-bg border border-loam/40 rounded-sm hover:border-sprout text-loam"
                     >
                       {speakingMsgIndex === idx ? (
                         <>
                           <VolumeX className="w-3.5 h-3.5 text-earth-amber animate-pulse" />
-                          <span>Stop Audio</span>
+                          <span>Stop</span>
                         </>
                       ) : (
                         <>
                           <Volume2 className="w-3.5 h-3.5 text-sprout" />
-                          <span>Listen (Female Voice)</span>
+                          <span>Listen Voice</span>
                         </>
                       )}
                     </button>
@@ -536,8 +536,8 @@ export default function FarmerChatbot({
               </div>
 
               {!isAssistant && (
-                <div className="w-8 h-8 rounded-sm bg-loam text-field-bg flex items-center justify-center font-bold text-sm shrink-0">
-                  <User className="w-4 h-4" />
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-sm bg-loam text-field-bg flex items-center justify-center font-bold text-xs sm:text-sm shrink-0">
+                  <User className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </div>
               )}
             </div>
@@ -552,19 +552,19 @@ export default function FarmerChatbot({
           e.preventDefault();
           handleSend();
         }}
-        className="flex items-center gap-2"
+        className="flex items-center gap-1.5 sm:gap-2"
       >
         <button
           type="button"
           onClick={toggleListening}
-          className={`p-3 border-2 border-loam rounded-sm transition-all shadow-sharp-sm ${
+          className={`p-2.5 sm:p-3 border-2 border-loam rounded-sm transition-all shadow-sharp-sm shrink-0 ${
             isListening
               ? 'bg-earth-amber text-loam animate-pulse'
               : 'bg-field-bg hover:bg-field-card text-loam'
           }`}
           title={isListening ? 'Stop Voice Input' : 'Speak Voice Input'}
         >
-          {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5 text-sprout" />}
+          {isListening ? <MicOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Mic className="w-4 h-4 sm:w-5 sm:h-5 text-sprout" />}
         </button>
 
         <input
@@ -578,16 +578,16 @@ export default function FarmerChatbot({
               ? 'यहाँ अपना सवाल लिखें या माइक दबाकर बोलें...'
               : 'Ask a question about crop diseases, fertilizers, weather...'
           }
-          className="flex-1 p-3 bg-field-bg border-2 border-loam rounded-sm text-sm font-mono focus:outline-none focus:ring-2 focus:ring-sprout text-loam"
+          className="flex-1 p-2.5 sm:p-3 min-w-0 bg-field-bg border-2 border-loam rounded-sm text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-sprout text-loam"
         />
 
         <button
           type="submit"
           disabled={isLoading || !input.trim()}
-          className="px-5 py-3 bg-sprout hover:bg-sprout-hover text-field-bg border-2 border-loam font-mono text-sm font-bold rounded-sm shadow-sharp-sm disabled:opacity-50 flex items-center gap-2 transition-all active:translate-x-0.5 active:translate-y-0.5"
+          className="px-3 sm:px-5 py-2.5 sm:py-3 bg-sprout hover:bg-sprout-hover text-field-bg border-2 border-loam font-mono text-xs sm:text-sm font-bold rounded-sm shadow-sharp-sm disabled:opacity-50 flex items-center gap-1.5 transition-all shrink-0 active:translate-x-0.5 active:translate-y-0.5"
         >
-          <span>Send</span>
-          <Send className="w-4 h-4" />
+          <span className="hidden xs:inline">Send</span>
+          <Send className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         </button>
       </form>
     </div>

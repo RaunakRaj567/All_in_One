@@ -35,13 +35,13 @@ function AppContent() {
           onOpenSettings={() => setIsSettingsOpen(true)}
           onOpenHistory={() => setIsHistoryOpen(true)}
         />
-        <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-8">
+        <main className="flex-1 max-w-7xl w-full mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
           <BuyerPortalLanding />
         </main>
-        <footer className="border-t-3 border-loam bg-field-surface px-4 lg:px-8 py-6 mt-12">
+        <footer className="border-t-3 border-loam bg-field-surface px-3 lg:px-8 py-4 sm:py-6 mt-6 sm:mt-12">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-loam-muted">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-sprout" />
+            <div className="flex items-center gap-2 text-center sm:text-left">
+              <span className="w-2 h-2 rounded-full bg-sprout shrink-0" />
               <span>AgriVision Buyer Portal • Direct Procurement & Mandi Bidding</span>
             </div>
             <div>Earth-Tone Aesthetic System</div>
@@ -54,18 +54,18 @@ function AppContent() {
   // If authenticated as Delivery Partner, render Delivery Partner Portal Landing
   if (userRole === 'delivery') {
     return (
-      <div className="min-h-screen bg-field-bg text-loam font-sans flex flex-col selection:bg-sprout-light selection:text-loam">
+      <div className="min-h-screen bg-field-bg text-loam font-sans flex flex-col selection:bg-sprout-light selection:text-loam overflow-x-hidden">
         <Header
           onOpenSettings={() => setIsSettingsOpen(true)}
           onOpenHistory={() => setIsHistoryOpen(true)}
         />
-        <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-8">
+        <main className="flex-1 max-w-7xl w-full mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
           <DeliveryPartnerPortalLanding />
         </main>
-        <footer className="border-t-3 border-loam bg-field-surface px-4 lg:px-8 py-6 mt-12">
+        <footer className="border-t-3 border-loam bg-field-surface px-3 lg:px-8 py-4 sm:py-6 mt-6 sm:mt-12">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-loam-muted">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-sprout" />
+            <div className="flex items-center gap-2 text-center sm:text-left">
+              <span className="w-2 h-2 rounded-full bg-sprout shrink-0" />
               <span>AgriVision Delivery Partner Portal • Logistics Fleet & Central Dispatch</span>
             </div>
             <div>Earth-Tone Aesthetic System</div>
@@ -76,7 +76,7 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-field-bg text-loam font-sans flex flex-col selection:bg-sprout-light selection:text-loam">
+    <div className="min-h-screen bg-field-bg text-loam font-sans flex flex-col selection:bg-sprout-light selection:text-loam overflow-x-hidden">
       
       {/* Sticky Header with React Router v6 Navigation & Log Out Button */}
       <Header
@@ -85,7 +85,7 @@ function AppContent() {
       />
 
       {/* Main Canvas Area rendering routed pages */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
         <Routes>
           <Route path="/" element={<Navigate to="/detector" replace />} />
           <Route path="/detector" element={<DetectorPage onOpenReport={() => setIsReportOpen(true)} />} />
