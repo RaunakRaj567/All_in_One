@@ -1,7 +1,7 @@
 import { SAMPLE_DISEASES } from '../data/mockDiseases';
 
 const SETTINGS_KEY = 'agrivision_gemini_settings';
-const DEFAULT_API_KEY = import.meta.env?.VITE_GEMINI_API_KEY || '';
+const DEFAULT_API_KEY = import.meta.env?.VITE_GEMINI_API_KEY || (typeof window !== 'undefined' ? localStorage.getItem('agrivision_gemini_key') || '' : '');
 
 export const getStoredSettings = () => {
   try {

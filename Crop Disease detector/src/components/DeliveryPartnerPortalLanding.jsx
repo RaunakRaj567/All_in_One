@@ -106,8 +106,8 @@ export default function DeliveryPartnerPortalLanding() {
 
   // Update order status
   const handleUpdateOrderStatus = (orderId, newStatus) => {
-    setOrders((prev) =>
-      prev.map((ord) => {
+    setOrders((prev) => {
+      const updated = prev.map((ord) => {
         if (ord.order_id === orderId) {
           return {
             ...ord,
@@ -116,8 +116,15 @@ export default function DeliveryPartnerPortalLanding() {
           };
         }
         return ord;
-      })
-    );
+      });
+
+      try {
+        localStorage.setItem('agrimitra_dispatch_orders', JSON.stringify(updated));
+      } catch (e) {
+        console.error('Error saving updated dispatch status:', e);
+      }
+      return updated;
+    });
 
     const targetOrd = orders.find((o) => o.order_id === orderId);
     setActionSuccessMessage({
@@ -130,7 +137,15 @@ export default function DeliveryPartnerPortalLanding() {
     }, 4000);
   };
 
-  const filteredOrders = orders.filter((ord) => {
+  // Filter orders to ONLY those assigned to the active logged-in driver (Strict Privacy Filter)
+  const driverAssignedOrders = orders.filter((ord) => {
+    if (!ord) return false;
+    const isMyId = ord.assigned_partner_id === activePartnerObj.id || ord.assigned_driver?.id === activePartnerObj.id;
+    const isMyName = ord.assigned_driver_name === activePartnerObj.name || ord.assigned_driver?.name === activePartnerObj.name;
+    return isMyId || isMyName;
+  });
+
+  const filteredOrders = driverAssignedOrders.filter((ord) => {
     const matchesStatus = statusFilter === 'All' || ord.status === statusFilter;
     const matchesSearch =
       ord.order_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -140,9 +155,9 @@ export default function DeliveryPartnerPortalLanding() {
     return matchesStatus && matchesSearch;
   });
 
-  const totalEarnings = orders
+  const totalEarnings = driverAssignedOrders
     .filter((o) => o.status === 'DELIVERED' || o.status === 'IN_TRANSIT')
-    .reduce((sum, o) => sum + o.freight_fee, 0);
+    .reduce((sum, o) => sum + (o.freight_fee || 0), 0);
 
   return (
     <div className="space-y-6 font-mono text-loam animate-in fade-in duration-300">
@@ -327,10 +342,10 @@ export default function DeliveryPartnerPortalLanding() {
           </div>
 
           <div className="p-3 bg-field-bg border-2 border-loam/40 rounded-sm space-y-1">
-            <span className="text-[10px] font-bold uppercase text-loam-muted block">Active Fleet Orders</span>
-            <p className="text-base font-extrabold text-sprout">{orders.length} Shipments Listed</p>
+            <span className="text-[10px] font-bold uppercase text-loam-muted block">Assigned Fleet Orders</span>
+            <p className="text-base font-extrabold text-sprout">{driverAssignedOrders.length} Shipments Allocated</p>
             <span className="text-[10px] text-loam-muted block">
-              {orders.filter((o) => o.status === 'IN_TRANSIT').length} In Transit • {orders.filter((o) => o.status === 'DISPATCHED').length} Ready for Pickup
+              {driverAssignedOrders.filter((o) => o.status === 'IN_TRANSIT').length} In Transit • {driverAssignedOrders.filter((o) => o.status === 'DISPATCHED').length} Ready for Pickup
             </span>
           </div>
 
@@ -414,8 +429,7 @@ export default function DeliveryPartnerPortalLanding() {
           onClick={() => {
             setPortalViewTab('map');
             if (!selectedMapOrderId) {
-              const driverOrders = orders.filter((o) => o.assigned_partner_id === activePartnerObj.id);
-              setSelectedMapOrderId((driverOrders[0] || orders[0])?.order_id);
+              setSelectedMapOrderId((driverAssignedOrders[0])?.order_id);
             }
           }}
           className={`flex items-center gap-2 px-4 py-2 rounded-sm font-mono text-xs font-extrabold border-2 transition-all ${
@@ -431,9 +445,9 @@ export default function DeliveryPartnerPortalLanding() {
 
       {/* ── TAB 1: INLINE OPTIMIZED HIGHWAY ROUTE MAP (IDENTICAL TO BUYER MAP) ── */}
       {portalViewTab === 'map' && (() => {
-        const mapList = orders;
+        const mapList = driverAssignedOrders;
         const currentMapOrder =
-          mapList.find((o) => o.order_id === selectedMapOrderId) || mapList[0] || orders[0];
+          mapList.find((o) => o.order_id === selectedMapOrderId) || mapList[0];
 
         return (
           <div className="space-y-4 animate-in fade-in duration-200">
@@ -497,10 +511,17 @@ export default function DeliveryPartnerPortalLanding() {
         </div>
 
         {filteredOrders.length === 0 ? (
-          <div className="p-8 bg-field-surface border-2 border-loam rounded-sm text-center space-y-2">
-            <Package className="w-10 h-10 text-loam-muted mx-auto" />
-            <h3 className="font-serif text-lg font-bold text-loam">No Shipments Found</h3>
-            <p className="text-xs text-loam-muted">No dispatched warehouse orders match the selected filter status.</p>
+          <div className="p-8 bg-field-surface border-2 border-loam rounded-sm text-center space-y-3 shadow-sharp">
+            <div className="w-12 h-12 bg-amber-100 border-2 border-amber-400 rounded-full flex items-center justify-center text-amber-800 text-2xl mx-auto shadow-sharp-sm">
+              🔒
+            </div>
+            <h3 className="font-serif text-lg font-extrabold text-loam">No Shipments Assigned To Driver {activePartnerObj.name}</h3>
+            <p className="text-xs text-loam-muted max-w-md mx-auto font-mono">
+              Strict privacy is enforced. You are currently viewing as <strong>{activePartnerObj.name} ({activePartnerObj.id})</strong>. Drivers can only view and manage delivery orders allocated directly to them.
+            </p>
+            <span className="inline-block text-[11px] font-bold text-amber-900 bg-amber-100 border border-amber-300 px-3 py-1 rounded font-mono">
+              🛡️ Other drivers' parcel details, locations, and revenue are strictly protected.
+            </span>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

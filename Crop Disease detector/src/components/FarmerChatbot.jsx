@@ -20,6 +20,7 @@ import {
   VolumeX,
   Leaf
 } from 'lucide-react';
+import { getStoredSettings } from '../services/geminiService';
 
 const PREBUILT_AGRI_QUESTIONS = {
   en: [
@@ -123,9 +124,105 @@ const generateMockAgronomyAdvice = (query, lang = 'en') => {
 - Maintain field drainage during monsoon and install drip lines during dry spells.
 
 ### 2. Integrated Pest Management
-- Spray neem-based bio-pesticides every 14 days as a preventive measure.
-
 *Need specific guidance for crop diseases, weather tips, or fertilizers? Ask any question below or click the mic button!*`;
+};
+
+/**
+ * Direct Live Streamer to Google Gemini REST API
+ */
+const streamDirectGeminiApi = async (textToSend, activeScanContext, lang, onChunk) => {
+  const settings = getStoredSettings();
+  const apiKey = (settings.apiKey || import.meta.env?.VITE_GEMINI_API_KEY || '').trim();
+  const primaryModel = settings.model || 'gemini-flash-latest';
+
+  const candidateModels = [
+    primaryModel,
+    'gemini-flash-latest',
+    'gemini-flash-lite-latest',
+    'gemini-3.6-flash',
+    'gemini-3.5-flash',
+    'gemini-pro-latest'
+  ];
+  const modelsToTry = [...new Set(candidateModels)];
+
+  const systemPersona = lang === 'hi'
+    ? `आप किसान एआई (Kisan AI), एक वरिष्ठ कृषि वैज्ञानिक व फसल सलाहकार हैं। किसानों को फसलों, कीट-रोग (रतुआ, झुलसा), जैविक/रासायनिक इलाज, NPK खाद व सिंचाई पर व्यावहारिक और सटीक सलाह हिंदी में दें।`
+    : `You are Kisan AI, an expert Agricultural Scientist & Farming Advisor. Provide highly practical, step-by-step farming guidance on crops, pest remedies, NPK fertilizers, and soil health.`;
+
+  const contextStr = activeScanContext
+    ? `\n[Context: Active Crop Scan detected ${activeScanContext.cropName || activeScanContext.cropType || 'Crop'} - Disease: ${activeScanContext.diseaseName || 'Active Disease'}]`
+    : '';
+
+  const fullPrompt = `${systemPersona}${contextStr}\n\nFarmer Query:\n${textToSend}`;
+
+  for (const modelName of modelsToTry) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:streamGenerateContent?alt=sse&key=${apiKey}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: fullPrompt }] }]
+        })
+      });
+
+      if (!response.ok) {
+        console.warn(`Direct Gemini API model '${modelName}' returned HTTP ${response.status}`);
+        continue;
+      }
+
+      if (!response.body || !response.body.getReader) {
+        const data = await response.json();
+        const textOut = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (textOut) {
+          onChunk(textOut);
+          return textOut;
+        }
+        continue;
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder('utf-8');
+      let done = false;
+      let accumulatedText = '';
+      let buffer = '';
+
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
+        if (value) {
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const jsonStr = line.replace(/^data:\s*/, '').trim();
+              if (jsonStr === '[DONE]') continue;
+              try {
+                const parsed = JSON.parse(jsonStr);
+                const textPart = parsed.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (textPart) {
+                  accumulatedText += textPart;
+                  onChunk(accumulatedText);
+                }
+              } catch (e) {
+                // Ignore parse errors on SSE chunk bounds
+              }
+            }
+          }
+        }
+      }
+
+      if (accumulatedText.trim()) {
+        return accumulatedText;
+      }
+    } catch (err) {
+      console.warn(`Direct Gemini API error on model '${modelName}':`, err);
+    }
+  }
+
+  throw new Error('All Gemini API models failed.');
 };
 
 export default function FarmerChatbot({
@@ -376,27 +473,38 @@ export default function FarmerChatbot({
         });
       }
     } catch (err) {
-      console.warn('Backend server unavailable. Running intelligent local agronomy streamer...', err);
-      const mockText = generateMockAgronomyAdvice(textToSend, lang);
-      let currentLength = 0;
-      const step = 8;
-      
-      const interval = setInterval(() => {
-        currentLength += step;
-        const chunk = mockText.slice(0, currentLength);
-        
-        setMessages(prev => {
-          const updated = [...prev];
-          updated[updated.length - 1] = { role: 'assistant', content: chunk };
-          return updated;
+      console.warn('Backend server endpoint unavailable or offline. Streaming directly from live Google Gemini API...', err);
+      try {
+        await streamDirectGeminiApi(textToSend, activeScanContext, lang, (accumulatedText) => {
+          setMessages(prev => {
+            const updated = [...prev];
+            updated[updated.length - 1] = { role: 'assistant', content: accumulatedText };
+            return updated;
+          });
         });
+      } catch (geminiErr) {
+        console.warn('Direct Gemini API stream error, using offline agronomy fallback:', geminiErr);
+        const mockText = generateMockAgronomyAdvice(textToSend, lang);
+        let currentLength = 0;
+        const step = 8;
+        
+        const interval = setInterval(() => {
+          currentLength += step;
+          const chunk = mockText.slice(0, currentLength);
+          
+          setMessages(prev => {
+            const updated = [...prev];
+            updated[updated.length - 1] = { role: 'assistant', content: chunk };
+            return updated;
+          });
 
-        if (currentLength >= mockText.length) {
-          clearInterval(interval);
-          setIsLoading(false);
-        }
-      }, 30);
-      return;
+          if (currentLength >= mockText.length) {
+            clearInterval(interval);
+            setIsLoading(false);
+          }
+        }, 30);
+        return;
+      }
     } finally {
       setIsLoading(false);
     }
