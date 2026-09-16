@@ -57,8 +57,8 @@ export default function Header({
           </div>
         </Link>
 
-        {/* React Router Nav Links (5 Mega Modules — Farmer Only) */}
-        {userRole !== 'buyer' && (
+        {/* React Router Nav Links (5 Mega Modules — Farmer Portal Only) */}
+        {userRole === 'farmer' && (
           <nav className="flex items-center gap-1 bg-field-bg p-1 border-2 border-loam rounded-sm shadow-sharp-sm overflow-x-auto w-full md:w-auto max-w-full no-scrollbar">
             <Link
               to="/detector"
@@ -253,19 +253,21 @@ export default function Header({
             <span className={`w-2 h-2 rounded-full ${hasApiKey ? 'bg-sprout animate-pulse' : 'bg-earth-amber'}`} />
           </button>
 
-          {/* History Drawer Toggle */}
-          <button
-            onClick={onOpenHistory}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-loam bg-field-bg hover:bg-field-card text-loam text-xs font-mono font-medium transition-all shadow-sharp-sm active:translate-x-0.5 active:translate-y-0.5"
-          >
-            <History className="w-3.5 h-3.5 text-sprout" />
-            <span className="hidden sm:inline">Scans Log</span>
-            {history.length > 0 && (
-              <span className="bg-sprout text-field-bg text-[10px] font-bold px-1.5 py-0.2 rounded-sm font-mono">
-                {history.length}
-              </span>
-            )}
-          </button>
+          {/* History Drawer Toggle (Farmer Only) */}
+          {userRole === 'farmer' && (
+            <button
+              onClick={onOpenHistory}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-sm border border-loam bg-field-bg hover:bg-field-card text-loam text-xs font-mono font-medium transition-all shadow-sharp-sm active:translate-x-0.5 active:translate-y-0.5"
+            >
+              <History className="w-3.5 h-3.5 text-sprout" />
+              <span className="hidden sm:inline">Scans Log</span>
+              {history.length > 0 && (
+                <span className="bg-sprout text-field-bg text-[10px] font-bold px-1.5 py-0.2 rounded-sm font-mono">
+                  {history.length}
+                </span>
+              )}
+            </button>
+          )}
 
         </div>
 

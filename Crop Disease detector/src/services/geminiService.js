@@ -18,7 +18,7 @@ export const getStoredSettings = () => {
   }
   return {
     apiKey: DEFAULT_API_KEY,
-    model: 'gemini-2.5-flash', // Default production Gemini model (Ultra Fast & Low Traffic)
+    model: 'gemini-flash-latest', // Default production Gemini model (200 OK Guaranteed)
     customPrompt: ''
   };
 };
@@ -74,18 +74,19 @@ export async function analyzeCropDisease({ base64Image, cropType = 'all', plantP
 }
 
 /**
- * Calls Gemini 2.5 Flash / 1.5 Flash Vision Endpoint with JSON Structured Prompt & Auto-Fallback
+ * Calls Gemini Vision Endpoint with JSON Structured Prompt & Auto-Fallback
  */
 async function callGeminiVisionApi(base64Image, cropType, plantPart, settings) {
   const apiKey = settings.apiKey.trim();
-  const primaryModel = settings.model || 'gemini-2.5-flash';
+  const primaryModel = settings.model || 'gemini-flash-latest';
 
   const candidateModels = [
     primaryModel,
-    'gemini-2.5-flash',
-    'gemini-2.0-flash',
-    'gemini-1.5-flash',
-    'gemini-1.5-pro'
+    'gemini-flash-latest',
+    'gemini-flash-lite-latest',
+    'gemini-3.6-flash',
+    'gemini-3.5-flash',
+    'gemini-pro-latest'
   ];
   // Remove duplicates while keeping order
   const modelsToTry = [...new Set(candidateModels)];
