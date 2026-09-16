@@ -44,8 +44,8 @@ def get_fallback_road_matrix() -> Tuple[List[List[float]], List[List[float]]]:
                     LOCATIONS[j]["latitude"], LOCATIONS[j]["longitude"]
                 )
                 dist_matrix[i][j] = d_km
-                # Estimate 40 km/h average speed in NCR traffic
-                dur_matrix[i][j] = round((d_km / 40.0) * 60.0, 1)
+                # Estimate 50 km/h average speed in NCR traffic
+                dur_matrix[i][j] = round((d_km / 50.0) * 60.0, 1)
 
     return dist_matrix, dur_matrix
 

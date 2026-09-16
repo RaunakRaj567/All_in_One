@@ -180,7 +180,7 @@ export default function LogisticsPage() {
   const fullTransportCost = Math.round(fullDistanceKm * 60); // Explicitly ₹60 per km
   const fullCostOfGoods = (totalMarketDemandKg / 1000) * costPerTon;
   const fullNetProfit = Math.max(0, fullMarketRevenue - fullTransportCost - fullCostOfGoods);
-  const fullFleetTimeMins = masterResult?.summary?.delivery_window_minutes || masterResult?.summary?.max_duration_minutes || Math.round((fullDistanceKm / Math.max(1, fullVehiclesNeeded) / 40 * 60) + (activeLocationCount / Math.max(1, fullVehiclesNeeded) * 15));
+  const fullFleetTimeMins = masterResult?.summary?.delivery_window_minutes || masterResult?.summary?.max_duration_minutes || Math.round((fullDistanceKm / Math.max(1, fullVehiclesNeeded) / 50 * 60) + (activeLocationCount / Math.max(1, fullVehiclesNeeded) * 15));
 
   // Financial Calculations for Row 2 (Actual Farmer Supply - Constrained by Harvest & Delivery)
   const routedSupplyKg = masterResult?.summary?.total_load_kg || Math.min(availableSupply, totalUserDemandKg);
@@ -194,8 +194,8 @@ export default function LogisticsPage() {
   const actualTransportCost = Math.round(actualDistanceKm * 60); // Explicitly ₹60 per km
   const actualCostOfGoods = (routedSupplyKg / 1000) * costPerTon;
   const actualNetProfit = Math.max(0, actualRevenue - actualTransportCost - actualCostOfGoods);
-  const actualDeliveryWindowMins = masterResult?.summary?.delivery_window_minutes || masterResult?.summary?.max_duration_minutes || Math.round((actualDistanceKm / Math.max(1, actualFleetDeployed) / 40 * 60) + (activeLocationCount / Math.max(1, actualFleetDeployed) * 15));
-  const actualTotalDrivingMins = masterResult?.summary?.total_duration_minutes || Math.round((actualDistanceKm / 40 * 60) + (activeLocationCount * 15));
+  const actualDeliveryWindowMins = masterResult?.summary?.delivery_window_minutes || masterResult?.summary?.max_duration_minutes || Math.round((actualDistanceKm / Math.max(1, actualFleetDeployed) / 50 * 60) + (activeLocationCount / Math.max(1, actualFleetDeployed) * 15));
+  const actualTotalDrivingMins = masterResult?.summary?.total_duration_minutes || Math.round((actualDistanceKm / 50 * 60) + (activeLocationCount * 15));
 
   const fmtTime = (mins) => {
     const h = Math.floor(mins / 60);

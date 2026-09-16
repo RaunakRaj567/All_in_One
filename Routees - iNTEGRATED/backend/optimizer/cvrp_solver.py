@@ -88,7 +88,7 @@ def solve_cvrp_fallback_greedy(
             utilization = round((current_load / cap) * 100.0, 2)
             num_stops = len(route_nodes) - 2
             route_dist_round = round(route_dist, 2)
-            est_duration = round((route_dist_round / 40.0 * 60.0) + (num_stops * 15), 1)
+            est_duration = round((route_dist_round / 50.0 * 60.0) + (num_stops * 15), 1)
 
             if duration_matrix:
                 custom_dur = sum(duration_matrix[route_nodes[k]][route_nodes[k+1]] for k in range(len(route_nodes)-1))
@@ -269,7 +269,7 @@ def solve_cvrp(
             capacity = vehicle_capacities[vehicle_id]
             utilization = round((route_load / capacity) * 100.0, 2) if capacity > 0 else 0.0
             num_stops = len(route_nodes_global) - 2
-            est_duration_mins = round((route_distance_km / 40.0 * 60.0) + (num_stops * 15), 1)
+            est_duration_mins = round((route_distance_km / 50.0 * 60.0) + (num_stops * 15), 1)
 
             if duration_matrix:
                 custom_dur = sum(duration_matrix[route_nodes_global[k]][route_nodes_global[k+1]] for k in range(len(route_nodes_global)-1))
