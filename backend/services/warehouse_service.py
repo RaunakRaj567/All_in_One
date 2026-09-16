@@ -723,7 +723,7 @@ def buy_warehouse_produce(
         "logistics_fee": logistics_fee,
         "total_payable": total_payable,
         "status": "DISPATCHED",
-        "estimated_delivery_mins": max(15, round(dist_km * 2.5)),
+        "estimated_delivery_mins": max(10, round((dist_km / 50.0) * 60)),  # 50 km/h average vehicle speed
         "timestamp": now_iso,
         "message": f"✅ Order #{order_id} placed! {purchased_ton:.2f} tons of {crop} shipped from Nyaya Marg Vault (Near USA Embassy) to {drop_location_name} ({drop_latitude:.4f}° N, {drop_longitude:.4f}° E)."
     }

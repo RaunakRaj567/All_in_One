@@ -200,7 +200,7 @@ export default function BuyerPortalLanding() {
         assigned_driver_company: randomDriver.company,
         assigned_driver_vehicle: randomDriver.vehicle_number,
         dispatch_time: new Date().toISOString(),
-        est_mins: res.estimated_delivery_mins || Math.round(currentDistKm * 1.5) + 10
+        est_mins: res.estimated_delivery_mins || Math.max(10, Math.round((currentDistKm / 50.0) * 60))
       };
 
       try {
@@ -816,8 +816,8 @@ export default function BuyerPortalLanding() {
                   {/* Computed Logistics Summary */}
                   <div className="p-3 bg-white/90 border border-amber-200/90 rounded-lg text-xs flex items-center justify-between shadow-xs">
                     <div>
-                      <span className="text-[10px] text-amber-900/80 block font-semibold uppercase tracking-wider">Distance from Nyaya Marg Vault</span>
-                      <strong className="text-amber-950 text-sm font-extrabold">{currentDistKm} km</strong>
+                      <span className="text-[10px] text-amber-900/80 block font-semibold uppercase tracking-wider">Distance & Est. Time (@ 50 km/h)</span>
+                      <strong className="text-amber-950 text-sm font-extrabold">{currentDistKm} km ({Math.max(10, Math.round((currentDistKm / 50.0) * 60))} mins)</strong>
                     </div>
                     <div className="text-right">
                       <span className="text-[10px] text-amber-900/80 block font-semibold uppercase tracking-wider">Logistics Freight (@ ₹60/km)</span>

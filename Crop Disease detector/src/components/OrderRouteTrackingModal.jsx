@@ -105,7 +105,9 @@ export default function OrderRouteTrackingModal({
   const [roadGeometry, setRoadGeometry] = useState([]);
   const [loadingRoad, setLoadingRoad] = useState(true);
   const [roadDistanceKm, setRoadDistanceKm] = useState(order.distance_km || 15.0);
-  const [estimatedMins, setEstimatedMins] = useState(order.est_mins || order.estimated_delivery_mins || 30);
+  const [estimatedMins, setEstimatedMins] = useState(
+    order.est_mins || order.estimated_delivery_mins || Math.max(10, Math.round(((order.distance_km || 15.0) / 50.0) * 60))
+  );
 
   // Animated truck state
   const [truckStep, setTruckStep] = useState(0);
@@ -137,7 +139,7 @@ export default function OrderRouteTrackingModal({
         if (data.code === 'Ok' && data.routes && data.routes[0]) {
           const coords = data.routes[0].geometry.coordinates.map(([lon, lat]) => [lat, lon]);
           const distKm = Number((data.routes[0].distance / 1000).toFixed(1));
-          const durationM = Math.max(12, Math.round(data.routes[0].duration / 60));
+          const durationM = Math.max(10, Math.round((distKm / 50.0) * 60)); // Calculated @ 50 km/h avg speed
 
           if (isMounted) {
             setRoadGeometry(coords);
@@ -381,7 +383,7 @@ export default function OrderRouteTrackingModal({
           <p className="text-base font-extrabold text-amber-800">
             ~{estimatedMins} <span className="text-xs font-bold text-loam-muted">mins</span>
           </p>
-          <span className="text-[10px] text-amber-900 font-bold block">Real Highway Transit</span>
+          <span className="text-[10px] text-amber-900 font-bold block">@ 50 km/h Avg Speed</span>
         </div>
 
         <div className="p-2.5 bg-field-bg border-2 border-loam/30 rounded-sm space-y-0.5">
