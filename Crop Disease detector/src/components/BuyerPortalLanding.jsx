@@ -55,14 +55,14 @@ const CROP_META = {
 const DEFAULT_CATALOG = [];
 
 const GEO_PRESETS = [
-  { name: 'Noida Buyer Logistics Hub, UP', lat: 28.5355, lon: 77.3910 },
-  { name: 'Ghaziabad Wholesale Center, UP', lat: 28.6692, lon: 77.4538 },
-  { name: 'Gurugram Processing Park, HR', lat: 28.4595, lon: 77.0266 },
-  { name: 'Faridabad Delivery Center, HR', lat: 28.4089, lon: 77.3178 },
-  { name: 'Sonipat Buyer Terminal, HR', lat: 28.9931, lon: 77.0151 },
-  { name: 'Panipat Logistics Facility, HR', lat: 29.3909, lon: 76.9635 },
-  { name: 'Meerut Commercial Dock, UP', lat: 28.9845, lon: 77.7064 },
-  { name: 'Rohtak Buyer Warehouse, HR', lat: 28.8955, lon: 76.6066 }
+  { name: 'Noida Buyer Logistics Hub, UP', shortName: 'Noida Logistics Hub', lat: 28.5355, lon: 77.3910 },
+  { name: 'Ghaziabad Wholesale Center, UP', shortName: 'Ghaziabad Wholesale', lat: 28.6692, lon: 77.4538 },
+  { name: 'Gurugram Processing Park, HR', shortName: 'Gurugram Processing', lat: 28.4595, lon: 77.0266 },
+  { name: 'Faridabad Delivery Center, HR', shortName: 'Faridabad Delivery', lat: 28.4089, lon: 77.3178 },
+  { name: 'Sonipat Buyer Terminal, HR', shortName: 'Sonipat Terminal', lat: 28.9931, lon: 77.0151 },
+  { name: 'Panipat Logistics Facility, HR', shortName: 'Panipat Logistics', lat: 29.3909, lon: 76.9635 },
+  { name: 'Meerut Commercial Dock, UP', shortName: 'Meerut Commercial', lat: 28.9845, lon: 77.7064 },
+  { name: 'Rohtak Buyer Warehouse, HR', shortName: 'Rohtak Warehouse', lat: 28.8955, lon: 76.6066 }
 ];
 
 export default function BuyerPortalLanding() {
@@ -589,19 +589,19 @@ export default function BuyerPortalLanding() {
 
         return (
           <div className="fixed inset-0 z-50 bg-loam/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-            <div className="bg-field-surface border-2 border-loam rounded-sm max-w-2xl w-full p-6 shadow-sharp space-y-5 my-8 text-loam font-mono animate-in zoom-in-95 duration-200">
+            <div className="bg-white border border-loam/30 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-5 my-8 text-loam font-sans animate-in zoom-in-95 duration-200">
               
               {/* Modal Header */}
-              <div className="flex items-center justify-between border-b-2 border-loam pb-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-9 h-9 bg-sprout border-2 border-loam rounded-sm flex items-center justify-center text-field-bg font-extrabold text-lg shadow-sharp-sm">
+              <div className="flex items-center justify-between border-b border-loam/15 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-sprout/15 border border-sprout/30 rounded-xl flex items-center justify-center text-xl shadow-xs">
                     🛒
                   </div>
                   <div>
-                    <h3 className="font-serif text-xl font-extrabold text-loam">
+                    <h3 className="font-serif text-xl font-bold text-loam">
                       Purchase {activeCheckoutItem.farmer_name}'s {activeCheckoutItem.crop}
                     </h3>
-                    <p className="text-xs text-loam-muted">
+                    <p className="text-xs text-loam-muted font-medium mt-0.5">
                       Lot #{activeCheckoutItem.inventory_id} • Shipped from Nyaya Marg Vault (Near USA Embassy)
                     </p>
                   </div>
@@ -610,44 +610,45 @@ export default function BuyerPortalLanding() {
                 <button
                   type="button"
                   onClick={() => setActiveCheckoutItem(null)}
-                  className="p-1 hover:bg-loam/10 rounded border border-loam/40"
+                  className="p-1.5 hover:bg-loam/10 rounded-lg text-loam-muted hover:text-loam transition"
                 >
-                  <X className="w-5 h-5 text-loam" />
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
               {/* Product & Quantity Selection */}
               <div className="space-y-4">
                 
-                <div className="p-3 bg-field-bg border-2 border-loam/40 rounded-sm grid grid-cols-2 gap-3 text-xs">
+                {/* Selected Lot Header Info */}
+                <div className="p-3.5 bg-field-bg border border-loam/15 rounded-xl grid grid-cols-2 gap-4 text-xs shadow-xs">
                   <div>
-                    <span className="text-loam-muted text-[10px] uppercase font-bold block">Selected Lot Title</span>
-                    <p className="font-extrabold text-sm text-loam flex items-center gap-1.5">
-                      <span>{CROP_META[activeCheckoutItem.crop]?.emoji || '🌾'}</span>
+                    <span className="text-loam-muted text-[10px] uppercase font-bold tracking-wider block mb-1">Selected Lot Title</span>
+                    <p className="font-bold text-sm text-loam flex items-center gap-2">
+                      <span className="text-base">{CROP_META[activeCheckoutItem.crop]?.emoji || '🌾'}</span>
                       <span>{activeCheckoutItem.farmer_name}'s {activeCheckoutItem.crop}</span>
                     </p>
                   </div>
 
                   <div>
-                    <span className="text-loam-muted text-[10px] uppercase font-bold block">Wholesale Price</span>
-                    <p className="font-extrabold text-sm text-sprout">
-                      ₹{(activeCheckoutItem.current_price_per_kg || 25).toFixed(2)} / kg
+                    <span className="text-loam-muted text-[10px] uppercase font-bold tracking-wider block mb-1">Wholesale Price</span>
+                    <p className="font-extrabold text-sm text-emerald-700">
+                      ₹{(activeCheckoutItem.current_price_per_kg || 25).toFixed(2)} <span className="text-xs font-normal text-loam-muted">/ kg</span>
                     </p>
                   </div>
                 </div>
 
                 {/* Purchase Tonnage Quantity Input & Stock Validation */}
-                <div className="border border-loam/40 p-3 rounded-sm bg-field-bg space-y-2">
+                <div className="border border-loam/20 p-4 rounded-xl bg-white space-y-3 shadow-xs">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold uppercase text-loam-muted">
+                    <label className="text-xs font-bold uppercase tracking-wider text-loam">
                       Purchase Quantity (Tons)
                     </label>
-                    <span className="text-xs font-extrabold text-sprout">
-                      Available Lot Stock: {maxTons.toFixed(2)} tons
+                    <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                      Available Stock: {maxTons.toFixed(2)} tons
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <input
                       type="number"
                       step="0.1"
@@ -655,22 +656,22 @@ export default function BuyerPortalLanding() {
                       max={maxTons}
                       value={buyQtyTons}
                       onChange={(e) => setBuyQtyTons(parseFloat(e.target.value))}
-                      className={`w-full p-2.5 bg-field-surface border-2 rounded-sm text-sm font-extrabold text-loam focus:outline-none ${
+                      className={`w-full p-2.5 bg-white border rounded-lg text-base font-bold text-loam focus:outline-none transition shadow-xs ${
                         isExceeding
-                          ? 'border-red-500 bg-red-50 text-red-900 focus:ring-2 focus:ring-red-500'
+                          ? 'border-red-500 bg-red-50/50 text-red-900 focus:ring-2 focus:ring-red-500/20'
                           : isInvalidQty
-                          ? 'border-amber-500 bg-amber-50 focus:ring-2 focus:ring-amber-500'
-                          : 'border-loam focus:ring-2 focus:ring-sprout'
+                          ? 'border-amber-500 bg-amber-50/50 focus:ring-2 focus:ring-amber-500/20'
+                          : 'border-loam/30 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20'
                       }`}
                     />
-                    <span className="text-xs font-bold text-loam-muted shrink-0">
+                    <span className="text-xs font-semibold text-loam-muted shrink-0 bg-gray-50 px-3 py-2.5 rounded-lg border border-gray-200">
                       = {(displayQty * 1000).toLocaleString()} kg
                     </span>
                   </div>
 
                   {/* 1-Click Quick Percentage Selectors */}
-                  <div className="flex items-center gap-1.5 pt-1 flex-wrap">
-                    <span className="text-[10px] font-bold text-loam-muted uppercase shrink-0">Quick Stock Select:</span>
+                  <div className="flex items-center gap-2 pt-1 flex-wrap">
+                    <span className="text-[11px] font-semibold text-loam-muted uppercase tracking-wider shrink-0">Quick Stock:</span>
                     {[
                       { label: '25%', ratio: 0.25 },
                       { label: '50%', ratio: 0.50 },
@@ -683,7 +684,7 @@ export default function BuyerPortalLanding() {
                           key={btn.label}
                           type="button"
                           onClick={() => setBuyQtyTons(targetVal)}
-                          className="px-2 py-1 bg-field-surface hover:bg-sprout-tint border border-loam/40 rounded text-[10px] font-mono font-bold text-loam transition"
+                          className="px-2.5 py-1 bg-field-bg hover:bg-emerald-600 hover:text-white border border-loam/20 rounded-md text-xs font-semibold text-loam transition shadow-xs"
                         >
                           {btn.label} ({targetVal} T)
                         </button>
@@ -693,66 +694,72 @@ export default function BuyerPortalLanding() {
 
                   {/* Real-time Warning Banners */}
                   {isExceeding && (
-                    <div className="p-3 bg-red-100 border-2 border-red-500 rounded-sm text-red-900 text-xs font-bold space-y-1">
-                      <div className="flex items-center gap-1.5 font-extrabold text-red-800">
-                        <AlertTriangle className="w-4 h-4 text-red-600 shrink-0 animate-bounce" />
-                        <span>⚠️ Purchase Limit Exceeded!</span>
+                    <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-900 text-xs font-medium space-y-1">
+                      <div className="flex items-center gap-2 font-bold text-red-700">
+                        <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
+                        <span>Purchase Limit Exceeded!</span>
                       </div>
-                      <p className="text-[11px] font-mono">
-                        You requested <strong>{buyQtyTons} tons</strong>, but {activeCheckoutItem.farmer_name} only has <strong>{maxTons.toFixed(2)} tons</strong> available in this lot. Buyers can only purchase up to the maximum amount stored by the farmer.
+                      <p className="text-xs text-red-800">
+                        You requested <strong>{buyQtyTons} tons</strong>, but {activeCheckoutItem.farmer_name} only has <strong>{maxTons.toFixed(2)} tons</strong> available in this lot.
                       </p>
                     </div>
                   )}
 
                   {isInvalidQty && (
-                    <div className="p-3 bg-amber-100 border-2 border-amber-500 rounded-sm text-amber-900 text-xs font-bold space-y-1">
-                      <div className="flex items-center gap-1.5 font-extrabold text-amber-800">
+                    <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-xs font-medium space-y-1">
+                      <div className="flex items-center gap-2 font-bold text-amber-800">
                         <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
-                        <span>⚠️ Invalid Purchase Quantity</span>
+                        <span>Invalid Purchase Quantity</span>
                       </div>
-                      <p className="text-[11px] font-mono">
+                      <p className="text-xs text-amber-800">
                         Please enter a valid purchase quantity greater than 0 tons.
                       </p>
                     </div>
                   )}
 
                   {isValidQty && (
-                    <div className="p-2 bg-emerald-50 border border-emerald-400 rounded-sm text-emerald-900 text-[11px] font-bold flex items-center gap-1.5 font-mono">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <div className="p-2.5 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-900 text-xs font-semibold flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                       <span>Quantity Approved: Within available stock limit ({maxTons.toFixed(2)} tons max).</span>
                     </div>
                   )}
                 </div>
 
                 {/* ── LOCATION & LATITUDE / LONGITUDE FORM ── */}
-                <div className="p-4 bg-amber-50/90 border-2 border-amber-400 rounded-sm space-y-3">
-                  <div className="flex items-center justify-between border-b border-amber-300 pb-2">
-                    <span className="text-xs font-extrabold text-amber-950 flex items-center gap-1.5">
+                <div className="p-4 bg-gradient-to-b from-amber-50/90 to-amber-50/40 border border-amber-300/80 rounded-xl space-y-3.5 shadow-xs">
+                  <div className="flex items-center justify-between border-b border-amber-200/80 pb-2.5">
+                    <span className="text-xs font-bold text-amber-950 flex items-center gap-2 tracking-wide">
                       <Navigation className="w-4 h-4 text-amber-700" />
-                      Set Drop-Off Destination & Geo-Coordinates (Lat / Lon)
+                      Set Drop-Off Destination & Geo-Coordinates
                     </span>
-                    <span className="text-[10px] font-bold text-amber-900 bg-amber-200 px-2 py-0.5 rounded">
-                      Dispatch from Nyaya Marg Vault
+                    <span className="text-[10px] font-semibold text-amber-900 bg-amber-200/70 px-2.5 py-0.5 rounded-full border border-amber-300">
+                      From: Nyaya Marg Vault
                     </span>
                   </div>
 
-                  {/* Preset Location Buttons */}
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-bold text-amber-900 uppercase block">1-Click Quick Location Presets (8 NCR Regional Buyer Locations):</span>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {/* Preset Location Buttons - Clean non-clipped grid */}
+                  <div className="space-y-1.5">
+                    <span className="text-[11px] font-bold text-amber-950 uppercase tracking-wider block">
+                      1-Click Quick Location Presets (NCR Regional Buyer Hubs):
+                    </span>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                       {GEO_PRESETS.map((p) => (
                         <button
                           key={p.name}
                           type="button"
                           onClick={() => handleSelectPreset(p)}
-                          className={`p-2 rounded border text-left text-xs transition-all ${
+                          className={`p-2.5 rounded-lg border text-left text-xs transition-all flex flex-col justify-between ${
                             dropLocationName === p.name
-                              ? 'bg-amber-700 text-amber-50 border-amber-900 font-extrabold shadow-sharp-sm'
-                              : 'bg-field-surface text-loam border-amber-300 hover:border-amber-500 hover:bg-amber-100/50'
+                              ? 'bg-amber-800 text-white border-amber-900 font-bold shadow-sm ring-2 ring-amber-500/50'
+                              : 'bg-white text-loam border-amber-200/80 hover:border-amber-400 hover:bg-amber-100/50 shadow-xs'
                           }`}
                         >
-                          <div className="truncate font-bold text-[11px]">{p.name}</div>
-                          <div className="text-[10px] opacity-80 font-mono">{p.lat}, {p.lon}</div>
+                          <div className="font-semibold text-[11px] leading-tight mb-1 text-balance">
+                            {p.shortName || p.name}
+                          </div>
+                          <div className="text-[10px] opacity-75 font-mono leading-none">
+                            {p.lat}, {p.lon}
+                          </div>
                         </button>
                       ))}
                     </div>
@@ -760,13 +767,15 @@ export default function BuyerPortalLanding() {
 
                   {/* Drop Location Name Input */}
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-amber-950 uppercase block">Drop-Off Location Name / Dock:</label>
+                    <label className="text-[11px] font-bold text-amber-950 uppercase tracking-wider block">
+                      Drop-Off Location Name / Dock:
+                    </label>
                     <input
                       type="text"
                       value={dropLocationName}
                       onChange={(e) => setDropLocationName(e.target.value)}
                       placeholder="e.g. Azadpur Mandi Gate 4, Delhi"
-                      className="w-full p-2 bg-field-surface border border-amber-400 rounded text-xs font-bold text-loam focus:outline-none focus:ring-1 focus:ring-amber-600"
+                      className="w-full p-2.5 bg-white border border-amber-300 rounded-lg text-xs font-semibold text-loam focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 shadow-xs"
                       required
                     />
                   </div>
@@ -774,40 +783,44 @@ export default function BuyerPortalLanding() {
                   {/* LATITUDE & LONGITUDE INPUTS */}
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-amber-950 uppercase block">Drop Latitude (°N):</label>
+                      <label className="text-[11px] font-bold text-amber-950 uppercase tracking-wider block">
+                        Drop Latitude (°N):
+                      </label>
                       <input
                         type="number"
                         step="0.000001"
                         value={dropLat}
                         onChange={(e) => setDropLat(parseFloat(e.target.value) || 28.6139)}
                         placeholder="28.6139"
-                        className="w-full p-2 bg-field-surface border border-amber-400 rounded text-xs font-bold text-loam focus:outline-none focus:ring-1 focus:ring-amber-600"
+                        className="w-full p-2.5 bg-white border border-amber-300 rounded-lg text-xs font-semibold font-mono text-loam focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 shadow-xs"
                         required
                       />
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-amber-950 uppercase block">Drop Longitude (°E):</label>
+                      <label className="text-[11px] font-bold text-amber-950 uppercase tracking-wider block">
+                        Drop Longitude (°E):
+                      </label>
                       <input
                         type="number"
                         step="0.000001"
                         value={dropLon}
                         onChange={(e) => setDropLon(parseFloat(e.target.value) || 77.2090)}
                         placeholder="77.2090"
-                        className="w-full p-2 bg-field-surface border border-amber-400 rounded text-xs font-bold text-loam focus:outline-none focus:ring-1 focus:ring-amber-600"
+                        className="w-full p-2.5 bg-white border border-amber-300 rounded-lg text-xs font-semibold font-mono text-loam focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 shadow-xs"
                         required
                       />
                     </div>
                   </div>
 
                   {/* Computed Logistics Summary */}
-                  <div className="p-2.5 bg-amber-100/90 border border-amber-300 rounded text-xs flex items-center justify-between">
+                  <div className="p-3 bg-white/90 border border-amber-200/90 rounded-lg text-xs flex items-center justify-between shadow-xs">
                     <div>
-                      <span className="text-[10px] text-amber-900 block font-bold">Haversine Distance from Nyaya Marg Vault:</span>
+                      <span className="text-[10px] text-amber-900/80 block font-semibold uppercase tracking-wider">Distance from Nyaya Marg Vault</span>
                       <strong className="text-amber-950 text-sm font-extrabold">{currentDistKm} km</strong>
                     </div>
                     <div className="text-right">
-                      <span className="text-[10px] text-amber-900 block font-bold">Logistics Freight (@ ₹60/km):</span>
+                      <span className="text-[10px] text-amber-900/80 block font-semibold uppercase tracking-wider">Logistics Freight (@ ₹60/km)</span>
                       <strong className="text-amber-950 text-sm font-extrabold">₹{currentTransportFee.toLocaleString()}</strong>
                     </div>
                   </div>
@@ -815,20 +828,20 @@ export default function BuyerPortalLanding() {
                 </div>
 
                 {/* Order Total Breakdown */}
-                <div className="p-3 bg-field-bg border-2 border-loam rounded-sm space-y-1.5 text-xs">
-                  <div className="flex items-center justify-between text-loam-muted">
+                <div className="p-4 bg-field-bg border border-loam/20 rounded-xl space-y-2 text-xs shadow-xs">
+                  <div className="flex items-center justify-between text-loam-muted font-medium">
                     <span>Crop Cost ({(displayQty * 1000).toLocaleString()} kg × ₹{(activeCheckoutItem.current_price_per_kg || 25).toFixed(2)}):</span>
-                    <span className="font-bold text-loam">₹{(displayQty * 1000 * (activeCheckoutItem.current_price_per_kg || 25)).toLocaleString()}</span>
+                    <span className="font-bold text-loam text-sm">₹{(displayQty * 1000 * (activeCheckoutItem.current_price_per_kg || 25)).toLocaleString()}</span>
                   </div>
 
-                  <div className="flex items-center justify-between text-loam-muted">
-                    <span>Logistics Transport Charge ({currentDistKm} km):</span>
-                    <span className="font-bold text-loam">₹{currentTransportFee.toLocaleString()}</span>
+                  <div className="flex items-center justify-between text-loam-muted font-medium">
+                    <span>Logistics Freight ({currentDistKm} km):</span>
+                    <span className="font-bold text-loam text-sm">₹{currentTransportFee.toLocaleString()}</span>
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t border-loam/20 text-sm font-extrabold text-loam">
+                  <div className="flex items-center justify-between pt-2.5 border-t border-loam/15 text-sm font-bold text-loam">
                     <span>Total Payable Amount:</span>
-                    <span className="text-sprout text-base">
+                    <span className="text-emerald-700 text-lg font-extrabold">
                       ₹{(displayQty * 1000 * (activeCheckoutItem.current_price_per_kg || 25) + currentTransportFee).toLocaleString()}
                     </span>
                   </div>
@@ -841,7 +854,7 @@ export default function BuyerPortalLanding() {
                 <button
                   type="button"
                   onClick={() => setActiveCheckoutItem(null)}
-                  className="py-2.5 px-4 bg-field-bg hover:bg-loam/10 text-loam border-2 border-loam rounded-sm text-xs font-mono font-bold transition"
+                  className="py-3 px-4 bg-white hover:bg-gray-100 text-loam border border-loam/30 rounded-xl text-xs font-bold transition shadow-xs"
                 >
                   Cancel
                 </button>
@@ -850,10 +863,10 @@ export default function BuyerPortalLanding() {
                   type="button"
                   onClick={handleExecutePurchase}
                   disabled={submittingOrder || !isValidQty}
-                  className={`py-2.5 px-4 border-2 rounded-sm text-xs font-mono font-extrabold shadow-sharp flex items-center justify-center gap-2 transition active:translate-y-0.5 ${
+                  className={`py-3 px-4 border rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-2 transition active:scale-[0.98] ${
                     !isValidQty
-                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed border-gray-400 shadow-none'
-                      : 'bg-sprout hover:bg-sprout-hover text-field-bg border-loam'
+                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed border-gray-300 shadow-none'
+                      : 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700'
                   }`}
                 >
                   <Truck className="w-4 h-4" />
@@ -877,88 +890,88 @@ export default function BuyerPortalLanding() {
       {/* ── ORDER CONFIRMATION RECEIPT MODAL ── */}
       {orderReceipt && (
         <div className="fixed inset-0 z-50 bg-loam/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-field-surface border-2 border-loam rounded-sm max-w-xl w-full p-6 shadow-sharp space-y-5 my-8 text-loam font-mono animate-in zoom-in-95 duration-200">
+          <div className="bg-white border border-loam/30 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-5 my-8 text-loam font-sans animate-in zoom-in-95 duration-200">
             
             {/* Success Header */}
-            <div className="text-center space-y-2 border-b-2 border-loam pb-4">
-              <div className="w-14 h-14 bg-emerald-100 border-2 border-emerald-500 rounded-full flex items-center justify-center text-emerald-800 text-3xl mx-auto shadow-sharp-sm">
+            <div className="text-center space-y-2 border-b border-loam/15 pb-4">
+              <div className="w-14 h-14 bg-emerald-100 border border-emerald-300 rounded-full flex items-center justify-center text-emerald-800 text-3xl mx-auto shadow-xs">
                 🚚
               </div>
-              <span className="bg-emerald-100 text-emerald-900 border border-emerald-400 text-[10px] font-extrabold px-3 py-1 rounded uppercase tracking-wider inline-block">
+              <span className="bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider inline-block">
                 PURCHASE ORDER CONFIRMED
               </span>
-              <h3 className="font-serif text-2xl font-extrabold text-loam">
+              <h3 className="font-serif text-2xl font-bold text-loam">
                 Order #{orderReceipt.order_id} Dispatched!
               </h3>
-              <p className="text-xs text-loam-muted">
+              <p className="text-xs text-loam-muted font-medium">
                 Freight truck dispatched from Nyaya Marg Vault (Near USA Embassy) to your drop-off coordinates.
               </p>
             </div>
 
             {/* Receipt Summary Table */}
-            <div className="p-4 bg-field-bg border-2 border-loam/40 rounded-sm space-y-3 text-xs">
+            <div className="p-4 bg-field-bg border border-loam/15 rounded-xl space-y-3 text-xs shadow-xs">
               
-              <div className="flex items-center justify-between border-b border-loam/20 pb-2">
-                <span className="text-loam-muted font-bold">Purchased Crop:</span>
-                <span className="font-extrabold text-loam text-sm">{orderReceipt.crop}</span>
+              <div className="flex items-center justify-between border-b border-loam/15 pb-2">
+                <span className="text-loam-muted font-semibold">Purchased Crop:</span>
+                <span className="font-bold text-loam text-sm">{orderReceipt.crop}</span>
               </div>
 
-              <div className="flex items-center justify-between border-b border-loam/20 pb-2">
-                <span className="text-loam-muted font-bold">Quantity Ordered:</span>
-                <span className="font-extrabold text-sprout">{orderReceipt.purchase_quantity_ton} tons ({orderReceipt.purchase_quantity_kg?.toLocaleString()} kg)</span>
+              <div className="flex items-center justify-between border-b border-loam/15 pb-2">
+                <span className="text-loam-muted font-semibold">Quantity Ordered:</span>
+                <span className="font-extrabold text-emerald-700">{orderReceipt.purchase_quantity_ton} tons ({orderReceipt.purchase_quantity_kg?.toLocaleString()} kg)</span>
               </div>
 
-              <div className="flex items-center justify-between border-b border-loam/20 pb-2">
-                <span className="text-loam-muted font-bold">Shipped From:</span>
-                <span className="font-extrabold text-loam text-[11px]">Nyaya Marg Vault (Near USA Embassy, New Delhi — 28°35'46.8"N 77°11'11.3"E)</span>
+              <div className="flex items-center justify-between border-b border-loam/15 pb-2">
+                <span className="text-loam-muted font-semibold">Shipped From:</span>
+                <span className="font-semibold text-loam text-xs text-right max-w-[260px]">Nyaya Marg Vault (Near USA Embassy, New Delhi)</span>
               </div>
 
-              <div className="flex items-center justify-between border-b border-loam/20 pb-2">
-                <span className="text-loam-muted font-bold">Drop Location:</span>
-                <span className="font-extrabold text-loam">{orderReceipt.drop_location_name}</span>
+              <div className="flex items-center justify-between border-b border-loam/15 pb-2">
+                <span className="text-loam-muted font-semibold">Drop Location:</span>
+                <span className="font-bold text-loam">{orderReceipt.drop_location_name}</span>
               </div>
 
               {/* Appointed Delivery Driver Card */}
               {orderReceipt.assigned_driver && (
-                <div className="p-3 bg-sprout-tint/70 border-2 border-sprout/60 rounded-sm space-y-1">
-                  <div className="flex items-center justify-between text-[10px] font-extrabold text-sprout uppercase">
-                    <span className="flex items-center gap-1">
-                      <Truck className="w-3.5 h-3.5 text-sprout" />
-                      Appointed Delivery Driver (1 of 5):
+                <div className="p-3 bg-emerald-50/80 border border-emerald-200 rounded-lg space-y-1">
+                  <div className="flex items-center justify-between text-[10px] font-bold text-emerald-800 uppercase tracking-wider">
+                    <span className="flex items-center gap-1.5">
+                      <Truck className="w-3.5 h-3.5 text-emerald-600" />
+                      Appointed Delivery Driver:
                     </span>
-                    <span className="bg-sprout text-field-bg text-[9px] px-1.5 py-0.2 rounded font-black tracking-wider">
-                      🎲 RANDOM AUTO-ASSIGN
+                    <span className="bg-emerald-600 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">
+                      AUTO-ASSIGNED
                     </span>
                   </div>
-                  <div className="font-extrabold text-loam text-sm flex items-center justify-between pt-0.5">
+                  <div className="font-bold text-loam text-sm flex items-center justify-between pt-0.5">
                     <span>{orderReceipt.assigned_driver.avatar || '🚛'} {orderReceipt.assigned_driver.name} ({orderReceipt.assigned_driver.id})</span>
-                    <span className="text-[11px] bg-field-bg px-2 py-0.5 rounded border border-loam/30 font-bold text-loam">
+                    <span className="text-[11px] bg-white px-2 py-0.5 rounded border border-loam/20 font-mono font-bold text-loam">
                       {orderReceipt.assigned_driver.vehicle_number}
                     </span>
                   </div>
-                  <div className="text-[11px] text-loam-muted font-bold">
+                  <div className="text-[11px] text-loam-muted font-medium">
                     {orderReceipt.assigned_driver.company} • Base: Nyaya Marg Central Vault
                   </div>
                 </div>
               )}
 
               {/* Exact Geo-Coordinates */}
-              <div className="p-2.5 bg-amber-50 border border-amber-300 rounded text-xs space-y-1">
-                <span className="text-[10px] font-extrabold text-amber-900 uppercase block flex items-center gap-1">
+              <div className="p-3 bg-amber-50/90 border border-amber-200 rounded-lg text-xs space-y-1">
+                <span className="text-[10px] font-bold text-amber-900 uppercase tracking-wider block flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-amber-700" />
                   Exact Drop Geo-Coordinates:
                 </span>
-                <div className="font-mono font-extrabold text-amber-950 text-sm">
+                <div className="font-mono font-bold text-amber-950 text-xs">
                   Latitude: {orderReceipt.drop_latitude}° N &nbsp;|&nbsp; Longitude: {orderReceipt.drop_longitude}° E
                 </div>
-                <div className="text-[10px] text-amber-800">
+                <div className="text-[11px] text-amber-800 font-medium">
                   Haversine Route: {orderReceipt.distance_km} km • Est. Transit: {orderReceipt.estimated_delivery_mins} mins
                 </div>
               </div>
 
-              <div className="flex items-center justify-between pt-1 font-extrabold text-sm">
+              <div className="flex items-center justify-between pt-1 font-bold text-sm">
                 <span>Total Amount Paid:</span>
-                <span className="text-sprout text-base">₹{orderReceipt.total_payable?.toLocaleString()}</span>
+                <span className="text-emerald-700 text-base font-extrabold">₹{orderReceipt.total_payable?.toLocaleString()}</span>
               </div>
 
             </div>
@@ -978,18 +991,18 @@ export default function BuyerPortalLanding() {
                     assigned_partner_id: orderReceipt.assigned_driver?.id
                   });
                 }}
-                className="py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white border-2 border-loam rounded-sm text-xs font-mono font-extrabold shadow-sharp flex items-center justify-center gap-2 transition active:translate-y-0.5"
+                className="py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-2 transition active:scale-[0.98]"
               >
                 <Navigation className="w-4 h-4 text-white" />
-                <span>🗺️ Track Live Route Map</span>
+                <span>Track Live Route Map</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setOrderReceipt(null)}
-                className="py-3 px-4 bg-sprout hover:bg-sprout-hover text-field-bg border-2 border-loam rounded-sm text-xs font-mono font-extrabold shadow-sharp flex items-center justify-center gap-2 transition active:translate-y-0.5"
+                className="py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-2 transition active:scale-[0.98]"
               >
-                <CheckCircle2 className="w-4 h-4 text-field-bg" />
+                <CheckCircle2 className="w-4 h-4 text-white" />
                 <span>Done & Continue Shopping</span>
               </button>
             </div>
