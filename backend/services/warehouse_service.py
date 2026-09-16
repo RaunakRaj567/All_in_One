@@ -19,7 +19,102 @@ except ImportError:
 # In-memory database tables for persistent multi-farmer demo session
 WAREHOUSES_DB: List[Dict[str, Any]] = [dict(w) for w in DEFAULT_WAREHOUSES]
 
-FARMER_INVENTORY_DB: List[Dict[str, Any]] = []
+DEFAULT_FARMER_INVENTORIES: List[Dict[str, Any]] = [
+    {
+        "inventory_id": "INV-1001",
+        "farmer_id": "F001",
+        "farmer_name": "Ramesh Kumar",
+        "farmer_location": "Azadpur, Delhi",
+        "farmer_avatar": "👨‍🌾",
+        "warehouse_id": "W001",
+        "warehouse_name": "Agri-Mitra Central Warehouse & Cold Vault",
+        "crop": "Wheat",
+        "quantity_kg": 5000.0,
+        "stored_quantity_kg": 5000.0,
+        "quantity_ton": 5.0,
+        "price_at_storage_per_kg": 28.0,
+        "price_at_storage_per_ton": 28000.0,
+        "custom_sp_per_kg": 28.0,
+        "markup_percent": 0.0,
+        "storage_cost_per_ton_per_day": 15.0,
+        "storage_date": "2026-09-10",
+        "planned_sell_date": "2026-09-17",
+        "status": "STORED",
+        "created_at": "2026-09-10T08:00:00Z",
+        "updated_at": "2026-09-10T08:00:00Z"
+    },
+    {
+        "inventory_id": "INV-1002",
+        "farmer_id": "F001",
+        "farmer_name": "Ramesh Kumar",
+        "farmer_location": "Azadpur, Delhi",
+        "farmer_avatar": "👨‍🌾",
+        "warehouse_id": "W001",
+        "warehouse_name": "Agri-Mitra Central Warehouse & Cold Vault",
+        "crop": "Onion",
+        "quantity_kg": 3000.0,
+        "stored_quantity_kg": 3000.0,
+        "quantity_ton": 3.0,
+        "price_at_storage_per_kg": 25.0,
+        "price_at_storage_per_ton": 25000.0,
+        "custom_sp_per_kg": 25.0,
+        "markup_percent": 0.0,
+        "storage_cost_per_ton_per_day": 15.0,
+        "storage_date": "2026-09-11",
+        "planned_sell_date": "2026-09-18",
+        "status": "STORED",
+        "created_at": "2026-09-11T09:00:00Z",
+        "updated_at": "2026-09-11T09:00:00Z"
+    },
+    {
+        "inventory_id": "INV-1003",
+        "farmer_id": "F002",
+        "farmer_name": "Suresh Patel",
+        "farmer_location": "Sahibabad, UP",
+        "farmer_avatar": "🌾",
+        "warehouse_id": "W001",
+        "warehouse_name": "Agri-Mitra Central Warehouse & Cold Vault",
+        "crop": "Rice",
+        "quantity_kg": 8000.0,
+        "stored_quantity_kg": 8000.0,
+        "quantity_ton": 8.0,
+        "price_at_storage_per_kg": 34.0,
+        "price_at_storage_per_ton": 34000.0,
+        "custom_sp_per_kg": 34.0,
+        "markup_percent": 0.0,
+        "storage_cost_per_ton_per_day": 15.0,
+        "storage_date": "2026-09-12",
+        "planned_sell_date": "2026-09-19",
+        "status": "STORED",
+        "created_at": "2026-09-12T10:00:00Z",
+        "updated_at": "2026-09-12T10:00:00Z"
+    },
+    {
+        "inventory_id": "INV-1004",
+        "farmer_id": "F003",
+        "farmer_name": "Anita Singh",
+        "farmer_location": "Gurugram, HR",
+        "farmer_avatar": "👩‍🌾",
+        "warehouse_id": "W001",
+        "warehouse_name": "Agri-Mitra Central Warehouse & Cold Vault",
+        "crop": "Maize",
+        "quantity_kg": 10000.0,
+        "stored_quantity_kg": 10000.0,
+        "quantity_ton": 10.0,
+        "price_at_storage_per_kg": 22.0,
+        "price_at_storage_per_ton": 22000.0,
+        "custom_sp_per_kg": 22.0,
+        "markup_percent": 0.0,
+        "storage_cost_per_ton_per_day": 15.0,
+        "storage_date": "2026-09-13",
+        "planned_sell_date": "2026-09-20",
+        "status": "STORED",
+        "created_at": "2026-09-13T11:00:00Z",
+        "updated_at": "2026-09-13T11:00:00Z"
+    }
+]
+
+FARMER_INVENTORY_DB: List[Dict[str, Any]] = [dict(item) for item in DEFAULT_FARMER_INVENTORIES]
 
 STORAGE_TRANSACTIONS_DB: List[Dict[str, Any]] = []
 
@@ -850,6 +945,7 @@ def reset_database() -> Dict[str, Any]:
     WAREHOUSES_DB.clear()
     WAREHOUSES_DB.extend([dict(w) for w in DEFAULT_WAREHOUSES])
     FARMER_INVENTORY_DB.clear()
+    FARMER_INVENTORY_DB.extend([dict(item) for item in DEFAULT_FARMER_INVENTORIES])
     STORAGE_TRANSACTIONS_DB.clear()
     FARMER_NOTIFICATIONS_DB.clear()
     return {
