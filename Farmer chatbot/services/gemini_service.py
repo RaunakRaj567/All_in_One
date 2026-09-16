@@ -11,15 +11,16 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 # Get Primary Gemini Model
 GEMINI_MODEL = os.getenv(
     "GEMINI_MODEL",
-    "gemini-3.5-flash"
+    "gemini-2.5-flash"
 )
 
 # Candidate fallback models if rate limits (429) or server errors (503/404) occur
 FALLBACK_MODELS = [
     GEMINI_MODEL,
-    "gemini-3.5-flash",
-    "gemini-3.5-flash-lite",
-    "gemini-3.1-flash-lite"
+    "gemini-2.5-flash",
+    "gemini-2.0-flash",
+    "gemini-1.5-flash",
+    "gemini-1.5-pro"
 ]
 # Remove duplicates while preserving priority order
 FALLBACK_MODELS = list(dict.fromkeys(FALLBACK_MODELS))

@@ -1,17 +1,24 @@
 import { SAMPLE_DISEASES } from '../data/mockDiseases';
 
 const SETTINGS_KEY = 'agrivision_gemini_settings';
+const DEFAULT_API_KEY = import.meta.env?.VITE_GEMINI_API_KEY || '';
 
 export const getStoredSettings = () => {
   try {
     const saved = localStorage.getItem(SETTINGS_KEY);
-    if (saved) return JSON.parse(saved);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (!parsed.apiKey || parsed.apiKey.trim() === '') {
+        parsed.apiKey = DEFAULT_API_KEY;
+      }
+      return parsed;
+    }
   } catch (e) {
     console.error('Failed to parse Gemini settings', e);
   }
   return {
-    apiKey: '',
-    model: 'gemini-2.5-flash', // Default Gemini model
+    apiKey: DEFAULT_API_KEY,
+    model: 'gemini-2.5-flash', // Default production Gemini model (Ultra Fast & Low Traffic)
     customPrompt: ''
   };
 };
@@ -67,12 +74,21 @@ export async function analyzeCropDisease({ base64Image, cropType = 'all', plantP
 }
 
 /**
- * Calls Gemini 2.5 Flash / 1.5 Flash Vision Endpoint with JSON Structured Prompt
+ * Calls Gemini 2.5 Flash / 1.5 Flash Vision Endpoint with JSON Structured Prompt & Auto-Fallback
  */
 async function callGeminiVisionApi(base64Image, cropType, plantPart, settings) {
   const apiKey = settings.apiKey.trim();
-  const model = settings.model || 'gemini-2.5-flash';
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+  const primaryModel = settings.model || 'gemini-2.5-flash';
+
+  const candidateModels = [
+    primaryModel,
+    'gemini-2.5-flash',
+    'gemini-2.0-flash',
+    'gemini-1.5-flash',
+    'gemini-1.5-pro'
+  ];
+  // Remove duplicates while keeping order
+  const modelsToTry = [...new Set(candidateModels)];
 
   // Clean base64 string
   const cleanBase64 = base64Image.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, '');
@@ -143,37 +159,49 @@ Return your analysis EXACTLY as valid JSON matching this schema (do not wrap in 
     }
   };
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(requestBody)
-  });
+  let lastErr = null;
 
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Gemini API HTTP Error ${response.status}: ${errText}`);
-  }
+  for (const model of modelsToTry) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody)
+      });
 
-  const data = await response.json();
-  const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!response.ok) {
+        const errText = await response.text();
+        if (response.status === 503 || response.status === 429 || response.status === 404) {
+          console.warn(`Model ${model} returned ${response.status}. Retrying next candidate...`);
+          lastErr = new Error(`HTTP ${response.status}: ${errText}`);
+          continue;
+        }
+        throw new Error(`Gemini API HTTP Error ${response.status}: ${errText}`);
+      }
 
-  if (!textResponse) {
-    throw new Error('Empty response from Gemini API');
-  }
+      const data = await response.json();
+      const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
-  // Parse JSON response safely
-  try {
-    const jsonMatch = textResponse.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      const parsed = JSON.parse(jsonMatch[0]);
-      return {
-        id: 'gemini-scan-' + Date.now(),
-        ...parsed
-      };
+      if (!textResponse) {
+        continue;
+      }
+
+      // Parse JSON response safely
+      const jsonMatch = textResponse.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        return {
+          id: 'gemini-scan-' + Date.now(),
+          ...parsed
+        };
+      }
+    } catch (err) {
+      console.warn(`Vision model ${model} error:`, err);
+      lastErr = err;
     }
-  } catch (e) {
-    console.error('Failed to parse Gemini JSON output', e, textResponse);
   }
 
-  throw new Error('Could not parse structured diagnosis JSON from Gemini');
+  throw lastErr || new Error('Could not parse structured diagnosis JSON from Gemini');
 }
+
