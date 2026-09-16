@@ -1,0 +1,33 @@
+# =====================================================================
+# AgriVision Mega Suite - Master Requirements & Python Dependencies
+# =====================================================================
+# To install all Python dependencies, run:
+#   pip install -r requirements.txt
+# =====================================================================
+
+# --- Core Web Backend Frameworks ---
+fastapi>=0.100.0
+uvicorn[standard]>=0.20.0
+flask>=3.0.0
+
+# --- AI & Generative Language Models ---
+google-genai>=0.1.0
+
+# --- Operations Research & Route Optimization ---
+ortools>=9.0.0
+
+# --- Machine Learning & Data Processing ---
+scikit-learn>=1.3.0
+joblib>=1.3.0
+pandas>=2.0.0
+numpy>=1.24.0
+
+# --- Data Visualization & Utilities ---
+matplotlib>=3.5.0
+requests>=2.28.0
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+
+# --- Excel Dataset Parsers ---
+xlrd>=2.0.1
+openpyxl>=3.1.0
